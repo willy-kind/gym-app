@@ -34,6 +34,10 @@ Do not add other dependencies without asking first.
 
 Use Dexie versioned schema migrations — never change a schema without bumping the version and writing a migration.
 
+## Starter data
+- `programs.md` in the repo root holds my current program. On first launch (empty database), seed the app with it: exercises, program, days, targets, starting weights and rest times. Parse it at build time into a typed seed file (`src/db/seed.ts`) — don't parse markdown at runtime.
+- Weight 0 means bodyweight. Show it as "BW" in the UI, and allow adding extra weight (e.g. weighted pull-ups).
+
 ## Features (build in this order)
 1. **App shell + PWA**: bottom tab bar (Train / Programs / History / Progress), manifest, icons, installable, works offline.
 2. **Exercises & programs**: create/edit/reorder programs, days, and exercises within a day.
@@ -41,10 +45,10 @@ Use Dexie versioned schema migrations — never change a schema without bumping 
 4. **Rest timer**: auto-starts after a set is logged, using the exercise's restSeconds. Timer must be timestamp-based (store the end time) so it stays correct if the app is backgrounded. Show a sticky bar with time left, +15s / −15s / skip.
 5. **History**: list of past sessions, tap to view/edit/delete.
 6. **Progress**: per-exercise charts — top set weight, estimated 1RM (Epley: w × (1 + reps/30)), and total volume over time.
-7. **Import / export**:
+7. **Backup / restore**:
    - Export all data as a JSON file (via share sheet / download).
    - Import that JSON back (full restore, with a confirmation step).
-   - Import a CSV export from my previous app (sample file in `/import-samples/`). Map it to sessions/sets/exercises; show a preview before saving.
+   - No import from other apps.
 8. **Settings**: rest timer default, kg/lb display, "Last backup" date with a reminder if older than 14 days.
 
 ## iOS PWA gotchas (important)
@@ -65,7 +69,7 @@ src/
   lib/         pure helpers (1RM, volume, date formatting, CSV parsing)
   test/
 public/        icons, manifest assets
-import-samples/
+programs.md    starter program (seed source)
 ```
 Keep business logic in `lib/` and `db/` as pure, tested functions. Components stay thin.
 
@@ -78,7 +82,7 @@ Keep business logic in `lib/` and `db/` as pure, tested functions. Components st
 
 ## Working rules for Claude
 - Work feature by feature in the order above. After each feature: run lint, tests and build, then stop and summarize what to test on the phone.
-- Write tests for everything in `lib/` and for the CSV/JSON import logic.
+- Write tests for everything in `lib/`, the programs.md seed parsing, and JSON backup/restore.
 - Commit after each working feature with a clear message.
 - Ask before changing the data model, adding dependencies, or changing the feature order.
 - Keep the UI simple and fast. No splash animations, no onboarding screens.
