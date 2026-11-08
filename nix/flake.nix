@@ -14,7 +14,7 @@
           buildInputs = with pkgs; [
             bash-completion
             git
-            # add project specific tools here
+            nodejs_24 # includes npm
           ];
 
           shellHook = ''
