@@ -1,0 +1,70 @@
+@import 'tailwindcss';
+
+/* iOS system colors. Dark is the default look; light only when the phone asks for it. */
+:root {
+  --bg: #000000;
+  --surface: #1c1c1e;
+  --surface-2: #2c2c2e;
+  --separator: #38383a;
+  --label: #ffffff;
+  --label-2: #ebebf599;
+  --accent: #0a84ff;
+  --bar: #121212f0;
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f2f2f7;
+    --surface: #ffffff;
+    --surface-2: #e5e5ea;
+    --separator: #c6c6c8;
+    --label: #000000;
+    --label-2: #3c3c4399;
+    --accent: #007aff;
+    --bar: #f9f9f9f0;
+    color-scheme: light;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-separator: var(--separator);
+  --color-label: var(--label);
+  --color-label-2: var(--label-2);
+  --color-accent: var(--accent);
+  --color-bar: var(--bar);
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--label);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  /* No rubber-band scrolling of the whole app shell; only inner panes scroll. */
+  overscroll-behavior: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* ≥16px on inputs stops iOS zooming in on focus. */
+input,
+select,
+textarea {
+  font-size: max(16px, 1em);
+  user-select: text;
+  -webkit-user-select: text;
+}
