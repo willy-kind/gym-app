@@ -9,6 +9,7 @@ import { ProgramPage } from './features/programs/ProgramPage'
 import { DayPage } from './features/programs/DayPage'
 import { ExercisesPage } from './features/programs/ExercisesPage'
 import { HistoryPage } from './features/history/HistoryPage'
+import { SessionDetailPage } from './features/history/SessionDetailPage'
 import { ProgressPage } from './features/progress/ProgressPage'
 
 export function App() {
@@ -23,6 +24,7 @@ export function App() {
           <Route path="/programs/:programId" element={<ProgramPage />} />
           <Route path="/programs/:programId/days/:dayId" element={<DayPage />} />
           <Route path="/history" element={<HistoryPage />} />
+          <Route path="/history/:sessionId" element={<SessionDetailPage />} />
           <Route path="/progress" element={<ProgressPage />} />
           <Route path="*" element={<Navigate to="/train" replace />} />
         </Routes>

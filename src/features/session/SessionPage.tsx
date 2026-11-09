@@ -6,7 +6,7 @@ import { ConfirmSheet } from '../../components/Dialogs'
 import { Sheet } from '../../components/Sheet'
 import { attempt } from '../../components/attempt'
 import { useNow } from '../../components/useNow'
-import { discardSession, finishSession, getSessionView, logSet } from '../../db/sessions'
+import { deleteSet, discardSession, finishSession, getSessionView, logSet, updateSet } from '../../db/sessions'
 import { useLiveQuery } from '../../db/useLiveQuery'
 import { formatClock, formatDuration } from '../../lib/date'
 import { buildSessionExercises, isBodyweightExercise, nextIncomplete, type LoggedSet, type SessionExercise } from '../../lib/session'
@@ -136,7 +136,16 @@ function SessionScreen({ sessionId }: { sessionId: number }) {
           }}
         />
       )}
-      {dialog?.kind === 'edit' && <SetSheet set={dialog.set} bodyweight={dialog.bodyweight} onClose={close} />}
+      {dialog?.kind === 'edit' && (
+        <SetSheet
+          title="Edit set"
+          initial={dialog.set}
+          bodyweight={dialog.bodyweight}
+          onSave={(values) => updateSet(dialog.set.id, values)}
+          onDelete={() => deleteSet(dialog.set.id)}
+          onClose={close}
+        />
+      )}
       {dialog?.kind === 'finish' &&
         (workingSets === 0 ? (
           <ConfirmSheet

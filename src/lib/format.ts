@@ -11,3 +11,8 @@ export function formatTargetSummary(t: { targetSets: number; targetReps: string;
   return `${t.targetSets} × ${t.targetReps} · ${formatWeight(t.targetWeight ?? 0)} · ${formatRest(t.restSeconds)} rest`
 }
 
+
+/** "12,340 kg" */
+export function formatVolume(kg: number): string {
+  return `${Math.round(kg).toLocaleString('en-GB')} kg`
+}
