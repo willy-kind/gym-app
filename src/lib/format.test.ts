@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatTargetSummary, formatVolume, formatWeight } from './format'
+import { formatAxisDate, formatAxisNumber, formatTargetSummary, formatVolume, formatWeight } from './format'
 
 describe('formatWeight', () => {
   it('shows 0 as BW', () => expect(formatWeight(0)).toBe('BW'))
@@ -25,5 +25,18 @@ describe('formatVolume', () => {
   it('rounds and groups thousands', () => {
     expect(formatVolume(12339.6)).toBe('12,340 kg')
     expect(formatVolume(0)).toBe('0 kg')
+  })
+})
+
+describe('axis formatting', () => {
+  it('writes numbers in full under 10,000 and compact above', () => {
+    expect(formatAxisNumber(82.5)).toBe('82.5')
+    expect(formatAxisNumber(2500)).toBe('2,500')
+    expect(formatAxisNumber(12_400)).toBe('12K')
+  })
+  it('writes short dates, with the year when the chart spans years', () => {
+    const t = new Date(2026, 10, 3).getTime()
+    expect(formatAxisDate(t, false)).toBe('3 Nov')
+    expect(formatAxisDate(t, true)).toBe('Nov 26')
   })
 })

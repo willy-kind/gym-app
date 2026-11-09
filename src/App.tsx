@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router'
 import { TabBar } from './components/TabBar'
 import { UpdateToast } from './components/UpdateToast'
@@ -11,6 +12,9 @@ import { ExercisesPage } from './features/programs/ExercisesPage'
 import { HistoryPage } from './features/history/HistoryPage'
 import { SessionDetailPage } from './features/history/SessionDetailPage'
 import { ProgressPage } from './features/progress/ProgressPage'
+
+// Charts pull in Recharts; load them only when a chart screen is opened.
+const ExerciseProgressPage = lazy(() => import('./features/progress/ExerciseProgressPage'))
 
 export function App() {
   return (
@@ -26,6 +30,14 @@ export function App() {
           <Route path="/history" element={<HistoryPage />} />
           <Route path="/history/:sessionId" element={<SessionDetailPage />} />
           <Route path="/progress" element={<ProgressPage />} />
+          <Route
+            path="/progress/:exerciseId"
+            element={
+              <Suspense fallback={null}>
+                <ExerciseProgressPage />
+              </Suspense>
+            }
+          />
           <Route path="*" element={<Navigate to="/train" replace />} />
         </Routes>
       </main>
