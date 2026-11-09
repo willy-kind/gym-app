@@ -114,6 +114,7 @@ function SessionScreen({ sessionId }: { sessionId: number }) {
       {active && (
         <SetConsole
           key={`${active.exerciseId}:${active.sets.length}`}
+          sessionId={sessionId}
           exercise={active}
           previous={previousOf(active)}
           bodyweight={bodyweightOf(active)}

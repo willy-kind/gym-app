@@ -5,17 +5,21 @@ import { useSettings } from '../settings/settingsStore'
 import { unlockAudio } from './sound'
 import { prefillSet, type SessionExercise, type SetValues } from '../../lib/session'
 import { RepsInput, WarmupToggle, WeightInput } from './setFields'
+import { PanelRestTimer } from './RestTimerBar'
 
 /**
- * The set entry panel, pinned to the bottom of the screen for the active exercise.
+ * The set entry panel, pinned to the bottom of the screen for the active exercise,
+ * with the workout's rest timer across its top while a rest is running.
  * Remounted (keyed by exercise and set count) after every logged set, so it prefills the next one.
  */
 export function SetConsole({
+  sessionId,
   exercise,
   previous,
   bodyweight,
   onLog,
 }: {
+  sessionId: number
   exercise: SessionExercise
   previous: readonly SetValues[]
   bodyweight: boolean
@@ -55,6 +59,7 @@ export function SetConsole({
 
   return (
     <div className="sticky bottom-0 z-10 -mx-4 rounded-t-2xl border-t border-separator bg-surface/95 px-4 pt-3 pb-3 shadow-[0_-8px_24px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+      <PanelRestTimer sessionId={sessionId} />
       <div className="mb-2 flex items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="truncate text-[15px] font-semibold">{exercise.name}</p>

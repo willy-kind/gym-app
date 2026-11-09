@@ -75,16 +75,16 @@ Tick each box. If something fails, note the step number and what you saw.
 
 ## 5. Rest timer
 
-- [ ] 5.1 Log a Bench set: a timer bar appears above the tab bar at **3:00** and counts down; a thin line shrinks.
+- [ ] 5.1 Log a Bench set: the timer appears across the top of the set panel at **3:00** and counts down; a thin line shrinks. There is no separate timer bar above the tab bar on the workout screen.
 - [ ] 5.2 **−15s** / **+15s** change the time; −15s never goes below 0:00.
 - [ ] 5.3 Lock the phone for ~60 s, unlock: the time has dropped by ~60 s (not paused).
 - [ ] 5.4 Switch to another app for ~30 s and back: correct time.
 - [ ] 5.5 Force-quit and reopen during a rest: the timer is still running with the right time.
-- [ ] 5.6 Let it run out: the bar turns **green**, says "Rest over — next set" and counts **+0:01, +0:02…**. **OK** dismisses it.
+- [ ] 5.6 Let it run out: the timer strip turns **green**, says "Rest over" and counts **+0:01, +0:02…**. **OK** dismisses it.
 - [ ] 5.7 Logging the next set restarts the countdown with that exercise's rest.
-- [ ] 5.8 During a rest switch to Programs: the bar stays; tapping the time returns to the workout.
-- [ ] 5.9 **Skip** hides the bar. Finishing or discarding the workout also clears it.
-- [ ] 5.10 With the set panel, timer bar and tab bar all showing, the workout is still comfortable to use on your phone's screen.
+- [ ] 5.8 During a rest switch to Programs: the timer moves to a bar above the tab bar; tapping the time returns to the workout, where it is back in the set panel.
+- [ ] 5.9 **Skip** hides the timer. Finishing or discarding the workout also clears it.
+- [ ] 5.10 With the timer running in the set panel and the keyboard closed, the exercise cards above still have comfortable room on your phone's screen.
 
 ## 6. History
 
