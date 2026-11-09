@@ -6,7 +6,7 @@ import { attempt } from '../../components/attempt'
 import { updateDayExercise } from '../../db/programs'
 import type { ProgramDayExercise } from '../../db/types'
 import { formatRepTarget, formatRest, MAX_REPS, MAX_REST_SECONDS, MAX_SETS, parseRepTarget, parseWeight, weightInputText } from '../../lib/targets'
-import { fromDisplay, toDisplay, weightStep } from '../../lib/units'
+import { fromDisplay, stepWeight, toDisplay } from '../../lib/units'
 import { useUnit } from '../settings/settingsStore'
 
 export function TargetSheet({
@@ -25,14 +25,13 @@ export function TargetSheet({
   const [repMin, setRepMin] = useState(reps.min)
   const [repMax, setRepMax] = useState(reps.max)
   const unit = useUnit()
-  const step = weightStep(unit)
   const [weightText, setWeightText] = useState(weightInputText(toDisplay(item.targetWeight ?? 0, unit)))
   const [rest, setRest] = useState(item.restSeconds)
 
   // Typed and stepped in the display unit; stored in kg.
   const typed = parseWeight(weightText)
   const weight = typed === null ? null : fromDisplay(typed, unit)
-  const nudgeWeight = (delta: number) => setWeightText(weightInputText(Math.max(0, Math.round(((typed ?? 0) + delta) * 100) / 100)))
+  const nudgeWeight = (direction: 1 | -1) => setWeightText(weightInputText(stepWeight(typed ?? 0, direction, unit)))
 
   const save = async () => {
     if (weight === null) return
@@ -76,7 +75,7 @@ export function TargetSheet({
             Weight
           </label>
           <div className="flex items-center gap-1">
-            <StepButton label="Decrease weight" disabled={!weight} onClick={() => nudgeWeight(-step)}>
+            <StepButton label="Decrease weight" disabled={!weight} onClick={() => nudgeWeight(-1)}>
               −
             </StepButton>
             <div className="relative">
@@ -91,7 +90,7 @@ export function TargetSheet({
               />
               <span className="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 text-[13px] text-label-2">{unit}</span>
             </div>
-            <StepButton label="Increase weight" onClick={() => nudgeWeight(step)}>
+            <StepButton label="Increase weight" onClick={() => nudgeWeight(1)}>
               +
             </StepButton>
           </div>

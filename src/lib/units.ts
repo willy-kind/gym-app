@@ -21,6 +21,21 @@ export function weightStep(unit: WeightUnit): number {
   return unit === 'kg' ? 2.5 : 5
 }
 
+/**
+ * One −/+ tap on a weight in the display unit. kg moves by 2.5 as is (so 61.25 → 63.75);
+ * lb snaps to the 5 lb grid, so a converted 187.4 lb goes to 190 or 185, never 192.4.
+ */
+export function stepWeight(value: number, direction: 1 | -1, unit: WeightUnit): number {
+  const step = weightStep(unit)
+  const next =
+    unit === 'kg'
+      ? value + direction * step
+      : direction === 1
+        ? Math.floor(value / step + 1e-9) * step + step
+        : Math.ceil(value / step - 1e-9) * step - step
+  return Math.max(0, Math.round(next * 100) / 100)
+}
+
 /** "80 kg", "176.4 lb" (no bodyweight handling). */
 export function formatMass(kg: number, unit: WeightUnit): string {
   return `${toDisplay(kg, unit)} ${unit}`

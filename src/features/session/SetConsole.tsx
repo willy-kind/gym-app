@@ -58,7 +58,7 @@ export function SetConsole({
   }
 
   return (
-    <div className="sticky bottom-0 z-10 -mx-4 rounded-t-2xl border-t border-separator bg-surface/95 px-4 pt-3 pb-3 shadow-[0_-8px_24px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+    <div className="sticky bottom-0 z-10 -mx-4 rounded-t-2xl border-t border-separator bg-surface px-4 pt-3 pb-3 shadow-[0_-8px_24px_rgba(0,0,0,0.35)]">
       <PanelRestTimer sessionId={sessionId} />
       <div className="mb-2 flex items-center justify-between gap-3">
         <div className="min-w-0">

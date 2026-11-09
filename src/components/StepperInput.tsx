@@ -13,14 +13,17 @@ export interface StepperInputProps {
   inputMode: 'decimal' | 'numeric'
   placeholder?: string
   unit?: string
+  /** Replaces the plain value ± step, e.g. to snap to a grid. */
+  stepFrom?: (value: number, direction: 1 | -1) => number
 }
 
 /** −/+ buttons around a typed number, for weight and reps. Invalid text is shown in red. */
-export function StepperInput({ label, text, onText, parse, format, step, min, max, inputMode, placeholder, unit }: StepperInputProps) {
+export function StepperInput({ label, text, onText, parse, format, step, min, max, inputMode, placeholder, unit, stepFrom }: StepperInputProps) {
   const id = useId()
   const value = parse(text)
-  const nudge = (delta: number) => {
-    const next = Math.round(((value ?? min) + delta) * 100) / 100
+  const nudge = (direction: 1 | -1) => {
+    const from = value ?? min
+    const next = stepFrom ? stepFrom(from, direction) : Math.round((from + direction * step) * 100) / 100
     onText(format(Math.min(max, Math.max(min, next))))
   }
   return (
@@ -29,7 +32,7 @@ export function StepperInput({ label, text, onText, parse, format, step, min, ma
         {label}
       </label>
       <div className="flex items-center gap-1">
-        <StepButton label={`Decrease ${label}`} disabled={value !== null && value <= min} onClick={() => nudge(-step)}>
+        <StepButton label={`Decrease ${label}`} disabled={value !== null && value <= min} onClick={() => nudge(-1)}>
           −
         </StepButton>
         <div className="relative">
@@ -46,7 +49,7 @@ export function StepperInput({ label, text, onText, parse, format, step, min, ma
           />
           {unit && <span className="pointer-events-none absolute top-1/2 right-1.5 -translate-y-1/2 text-[11px] text-label-2">{unit}</span>}
         </div>
-        <StepButton label={`Increase ${label}`} disabled={value !== null && value >= max} onClick={() => nudge(step)}>
+        <StepButton label={`Increase ${label}`} disabled={value !== null && value >= max} onClick={() => nudge(1)}>
           +
         </StepButton>
       </div>

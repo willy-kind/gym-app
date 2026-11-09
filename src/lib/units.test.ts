@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatMass, fromDisplay, toDisplay, weightStep } from './units'
+import { formatMass, fromDisplay, stepWeight, toDisplay, weightStep } from './units'
 
 describe('units', () => {
   it('leaves kg alone, rounded to 0.01', () => {
@@ -29,5 +29,25 @@ describe('units', () => {
     expect(weightStep('lb')).toBe(5)
     expect(formatMass(80, 'kg')).toBe('80 kg')
     expect(formatMass(80, 'lb')).toBe('176.4 lb')
+  })
+})
+
+describe('stepWeight', () => {
+  it('moves kg by 2.5 without snapping', () => {
+    expect(stepWeight(80, 1, 'kg')).toBe(82.5)
+    expect(stepWeight(61.25, 1, 'kg')).toBe(63.75)
+    expect(stepWeight(61.25, -1, 'kg')).toBe(58.75)
+    expect(stepWeight(1, -1, 'kg')).toBe(0)
+  })
+
+  it('snaps lb to the 5 lb grid', () => {
+    expect(stepWeight(187.4, 1, 'lb')).toBe(190)
+    expect(stepWeight(187.4, -1, 'lb')).toBe(185)
+    expect(stepWeight(185, 1, 'lb')).toBe(190)
+    expect(stepWeight(185, -1, 'lb')).toBe(180)
+    expect(stepWeight(135, 1, 'lb')).toBe(140)
+    expect(stepWeight(2.2, -1, 'lb')).toBe(0)
+    expect(stepWeight(0, -1, 'lb')).toBe(0)
+    expect(stepWeight(0, 1, 'lb')).toBe(5)
   })
 })
