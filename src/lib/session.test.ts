@@ -139,3 +139,11 @@ describe('isBodyweightExercise', () => {
     expect(isBodyweightExercise(undefined, false, [])).toBe(false)
   })
 })
+
+describe('lb display', () => {
+  it('formats sets and summaries in lb, grouping by the stored kg', () => {
+    expect(formatSetWeight(100, false, 'lb')).toBe('220.5 lb')
+    expect(formatSetWeight(10, true, 'lb')).toBe('BW + 22 lb')
+    expect(formatSetsSummary([{ weight: 60, reps: 8 }, { weight: 60, reps: 7 }], false, 'lb')).toBe('132.3 lb × 8, 7')
+  })
+})

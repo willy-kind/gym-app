@@ -3,6 +3,8 @@ import { Sheet } from '../../components/Sheet'
 import { Button } from '../../components/Button'
 import { attempt } from '../../components/attempt'
 import { parseReps, parseWeight, weightInputText } from '../../lib/targets'
+import { fromDisplay, toDisplay } from '../../lib/units'
+import { useUnit } from '../settings/settingsStore'
 import { RepsInput, WarmupToggle, WeightInput } from './setFields'
 
 export interface SetValuesInput {
@@ -28,17 +30,19 @@ export function SetSheet({
   onDelete?: () => Promise<unknown>
   onClose: () => void
 }) {
-  const [wText, setWText] = useState(weightInputText(initial.weight))
+  const unit = useUnit()
+  const [wText, setWText] = useState(weightInputText(toDisplay(initial.weight, unit)))
   const [rText, setRText] = useState(String(initial.reps))
   const [warmup, setWarmup] = useState(initial.isWarmup)
   const [confirmDelete, setConfirmDelete] = useState(false)
-  const weight = parseWeight(wText)
+  const typed = parseWeight(wText)
+  const weight = typed === null ? null : fromDisplay(typed, unit)
   const reps = parseReps(rText)
 
   return (
     <Sheet title={title} onClose={onClose}>
       <div className="mb-4 flex items-start justify-between gap-2">
-        <WeightInput text={wText} onText={setWText} bodyweight={bodyweight} />
+        <WeightInput text={wText} onText={setWText} bodyweight={bodyweight} unit={unit} />
         <RepsInput text={rText} onText={setRText} />
       </div>
       <div className="mb-4 flex justify-center">

@@ -1,5 +1,8 @@
 import { useRef, useState } from 'react'
 import { parseReps, parseWeight, weightInputText } from '../../lib/targets'
+import { fromDisplay, toDisplay } from '../../lib/units'
+import { useSettings } from '../settings/settingsStore'
+import { unlockAudio } from './sound'
 import { prefillSet, type SessionExercise, type SetValues } from '../../lib/session'
 import { RepsInput, WarmupToggle, WeightInput } from './setFields'
 
@@ -20,14 +23,16 @@ export function SetConsole({
 }) {
   const working = exercise.sets.filter((s) => !s.isWarmup)
   const prefill = prefillSet({ previous, current: working, targetWeight: exercise.plan?.targetWeight, targetReps: exercise.plan?.targetReps })
-  const [wText, setWText] = useState(weightInputText(prefill.weight))
+  const { unit, timerSound } = useSettings()
+  const [wText, setWText] = useState(weightInputText(toDisplay(prefill.weight, unit)))
   const [rText, setRText] = useState(String(prefill.reps))
   const [warmup, setWarmup] = useState(false)
   const [saving, setSaving] = useState(false)
   // Guards against a double tap logging the same set twice before the button re-renders as disabled.
   const inFlight = useRef(false)
 
-  const weight = parseWeight(wText)
+  const typed = parseWeight(wText)
+  const weight = typed === null ? null : fromDisplay(typed, unit)
   const reps = parseReps(rText)
   const n = working.length + 1
   const label = warmup ? 'Warm-up set' : exercise.plan ? `Set ${n} of ${exercise.plan.targetSets}${n > exercise.plan.targetSets ? ' (extra)' : ''}` : `Set ${n}`
@@ -35,6 +40,8 @@ export function SetConsole({
   const submit = async () => {
     if (weight === null || reps === null || inFlight.current) return
     inFlight.current = true
+    // iOS only lets a page play sound after a tap; this tap unlocks the rest-over beep.
+    if (timerSound) unlockAudio()
     // Blur first so the iOS keyboard closes and the button press isn't lost.
     ;(document.activeElement as HTMLElement | null)?.blur()
     setSaving(true)
@@ -56,7 +63,7 @@ export function SetConsole({
         <WarmupToggle on={warmup} onToggle={() => setWarmup(!warmup)} />
       </div>
       <div className="mb-3 flex items-start justify-between gap-2">
-        <WeightInput text={wText} onText={setWText} bodyweight={bodyweight} />
+        <WeightInput text={wText} onText={setWText} bodyweight={bodyweight} unit={unit} />
         <RepsInput text={rText} onText={setRText} />
       </div>
       <button

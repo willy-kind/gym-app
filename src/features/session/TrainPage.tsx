@@ -10,6 +10,10 @@ import { useLiveQuery } from '../../db/useLiveQuery'
 import { formatDay } from '../../lib/date'
 import { suggestNextDay } from '../../lib/session'
 import { clearRest } from './restTimerStore'
+import { useSettings } from '../settings/settingsStore'
+import { useNow } from '../../components/useNow'
+import { backupReminder } from '../../lib/settings'
+import { db } from '../../db/db'
 
 async function loadTrain() {
   const active = await getActiveSession()
@@ -17,7 +21,8 @@ async function loadTrain() {
   const programs = (await listPrograms()).filter((p) => !p.program.archived)
   const details = (await Promise.all(programs.map((p) => getProgramDetail(p.program.id)))).filter((d): d is ProgramDetail => d !== null)
   const lastTrained = await getLastTrainedByDay()
-  return { activeId: undefined, details, lastTrained }
+  const hasWorkouts = (await db.sessions.filter((s) => s.finishedAt !== undefined).count()) > 0
+  return { activeId: undefined, details, lastTrained, hasWorkouts }
 }
 
 const settingsLink = (
@@ -33,6 +38,8 @@ const settingsLink = (
 export function TrainPage() {
   const data = useLiveQuery(loadTrain, [])
   const navigate = useNavigate()
+  const { lastBackupAt } = useSettings()
+  const now = useNow(60 * 60_000)
 
   // A rest timer can't outlive its workout (e.g. one deleted from History).
   const noSession = data !== undefined && data.activeId === undefined
@@ -43,7 +50,8 @@ export function TrainPage() {
   if (!data) return <Page title="Train" action={settingsLink} />
   if (data.activeId !== undefined) return <Navigate to={`/train/session/${data.activeId}`} replace />
 
-  const { details, lastTrained } = data
+  const { details, lastTrained, hasWorkouts } = data
+  const reminder = backupReminder(lastBackupAt, hasWorkouts, now)
   const start = (programDayId?: number) =>
     attempt(async () => {
       const id = await startSession(programDayId)
@@ -62,6 +70,17 @@ export function TrainPage() {
 
   return (
     <Page title="Train" action={settingsLink}>
+      {reminder && (
+        <Link to="/settings" className="mb-4 flex items-center gap-3 rounded-xl bg-surface px-4 py-3">
+          <span className="min-w-0 flex-1">
+            <span className="block font-semibold">Time for a backup</span>
+            <span className="block text-[15px] text-label-2">
+              {reminder.days === null ? 'You haven’t backed up yet. Your workouts only live on this phone.' : `Last backup was ${reminder.days} days ago.`}
+            </span>
+          </span>
+          <span className="shrink-0 font-semibold text-accent">Back up</span>
+        </Link>
+      )}
       {withLast.map(({ detail, next }) => (
         <ListGroup key={detail.program.id} header={detail.program.name}>
           {detail.days.map(({ day, exerciseCount }) => {

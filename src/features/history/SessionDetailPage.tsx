@@ -15,6 +15,7 @@ import { buildSessionExercises, formatSetWeight, isBodyweightExercise, type Logg
 import { ExercisePickerSheet } from '../programs/ExercisePickerSheet'
 import { SetSheet, type SetValuesInput } from '../session/SetSheet'
 import { NotesSheet, TimesSheet } from './EditSheets'
+import { useUnit } from '../settings/settingsStore'
 
 type Dialog =
   | { kind: 'edit'; set: LoggedSet; bodyweight: boolean }
@@ -28,6 +29,7 @@ export function SessionDetailPage() {
   const sessionId = Number(useParams().sessionId)
   const view = useLiveQuery(() => getSessionView(sessionId), [sessionId])
   const navigate = useNavigate()
+  const unit = useUnit()
   const [dialog, setDialog] = useState<Dialog | null>(null)
   const close = () => setDialog(null)
   const back = { to: '/history', label: 'History' }
@@ -69,7 +71,7 @@ export function SessionDetailPage() {
         />
       </ListGroup>
       <p className="-mt-4 mb-6 px-4 text-[13px] text-label-2 tabular-nums">
-        {[view.program?.name, `${stats.workingSets} sets`, `${stats.exercises} exercises`, `${formatVolume(stats.volume)} volume`].filter(Boolean).join(' · ')}
+        {[view.program?.name, `${stats.workingSets} sets`, `${stats.exercises} exercises`, `${formatVolume(stats.volume, unit)} volume`].filter(Boolean).join(' · ')}
       </p>
 
       {exercises.length === 0 && <p className="mb-6 px-1 text-label-2">No sets in this workout.</p>}
@@ -88,7 +90,7 @@ export function SessionDetailPage() {
                     <span className="flex gap-3 tabular-nums">
                       <span className={`w-7 font-semibold ${s.isWarmup ? 'text-label-2' : 'text-accent'}`}>{s.isWarmup ? 'W' : working}</span>
                       <span>
-                        {formatSetWeight(s.weight, bw)} × {s.reps}
+                        {formatSetWeight(s.weight, bw, unit)} × {s.reps}
                       </span>
                     </span>
                   }

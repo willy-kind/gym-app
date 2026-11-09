@@ -5,11 +5,9 @@ import { StepButton, Stepper } from '../../components/Stepper'
 import { attempt } from '../../components/attempt'
 import { updateDayExercise } from '../../db/programs'
 import type { ProgramDayExercise } from '../../db/types'
-import { formatRepTarget, formatRest, MAX_REPS, MAX_REST_SECONDS, MAX_SETS, parseRepTarget, parseWeight } from '../../lib/targets'
-
-const WEIGHT_STEP = 2.5
-
-const weightToText = (kg: number | undefined) => (kg ? String(kg) : '')
+import { formatRepTarget, formatRest, MAX_REPS, MAX_REST_SECONDS, MAX_SETS, parseRepTarget, parseWeight, weightInputText } from '../../lib/targets'
+import { fromDisplay, toDisplay, weightStep } from '../../lib/units'
+import { useUnit } from '../settings/settingsStore'
 
 export function TargetSheet({
   name,
@@ -26,11 +24,15 @@ export function TargetSheet({
   const [sets, setSets] = useState(item.targetSets)
   const [repMin, setRepMin] = useState(reps.min)
   const [repMax, setRepMax] = useState(reps.max)
-  const [weightText, setWeightText] = useState(weightToText(item.targetWeight))
+  const unit = useUnit()
+  const step = weightStep(unit)
+  const [weightText, setWeightText] = useState(weightInputText(toDisplay(item.targetWeight ?? 0, unit)))
   const [rest, setRest] = useState(item.restSeconds)
 
-  const weight = parseWeight(weightText)
-  const nudgeWeight = (delta: number) => setWeightText(weightToText(Math.max(0, (weight ?? 0) + delta)))
+  // Typed and stepped in the display unit; stored in kg.
+  const typed = parseWeight(weightText)
+  const weight = typed === null ? null : fromDisplay(typed, unit)
+  const nudgeWeight = (delta: number) => setWeightText(weightInputText(Math.max(0, Math.round(((typed ?? 0) + delta) * 100) / 100)))
 
   const save = async () => {
     if (weight === null) return
@@ -74,7 +76,7 @@ export function TargetSheet({
             Weight
           </label>
           <div className="flex items-center gap-1">
-            <StepButton label="Decrease weight" disabled={!weight} onClick={() => nudgeWeight(-WEIGHT_STEP)}>
+            <StepButton label="Decrease weight" disabled={!weight} onClick={() => nudgeWeight(-step)}>
               −
             </StepButton>
             <div className="relative">
@@ -87,9 +89,9 @@ export function TargetSheet({
                 onChange={(e) => setWeightText(e.target.value)}
                 className={`h-12 w-20 rounded-lg bg-surface-2 pr-7 text-right text-[20px] font-semibold tabular-nums outline-none ${weight === null ? 'text-danger' : ''}`}
               />
-              <span className="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 text-[13px] text-label-2">kg</span>
+              <span className="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 text-[13px] text-label-2">{unit}</span>
             </div>
-            <StepButton label="Increase weight" onClick={() => nudgeWeight(WEIGHT_STEP)}>
+            <StepButton label="Increase weight" onClick={() => nudgeWeight(step)}>
               +
             </StepButton>
           </div>

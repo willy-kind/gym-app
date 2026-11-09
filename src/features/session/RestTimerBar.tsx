@@ -1,9 +1,11 @@
-import { useEffect, type ReactNode } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
 import { useNavigate } from 'react-router'
 import { useNow } from '../../components/useNow'
 import { isDone, MAX_OVERTIME_SECONDS, overtimeSeconds, progress, remainingSeconds, REST_ADJUST_SECONDS, type RestTimer } from '../../lib/restTimer'
 import { formatRest } from '../../lib/targets'
 import { adjustRest, clearRest, useRestTimer } from './restTimerStore'
+import { getSettings } from '../settings/settingsStore'
+import { playRestDone } from './sound'
 
 /** Sticky rest bar above the tab bar, on every screen while a rest is running. */
 export function RestTimerBar() {
@@ -21,6 +23,16 @@ function RunningBar({ timer }: { timer: RestTimer }) {
   useEffect(() => {
     if (over > MAX_OVERTIME_SECONDS) clearRest()
   }, [over])
+
+  // Beep once as the rest runs out, if enabled. Not when coming back to an
+  // already-finished timer (the app was in the background when it ended).
+  const beeped = useRef<number | null>(null)
+  useEffect(() => {
+    if (done && over <= 2 && beeped.current !== timer.endsAt && getSettings().timerSound) {
+      beeped.current = timer.endsAt
+      playRestDone()
+    }
+  }, [done, over, timer.endsAt])
 
   return (
     <div

@@ -124,9 +124,9 @@ export async function reorderDays(programId: number, orderedIds: number[]): Prom
 
 /**
  * Appends an exercise to a day. Targets are copied from the same exercise on
- * another day if it has one, otherwise sensible defaults (weight 0 = BW).
+ * another day if it has one, otherwise defaults (weight 0 = BW, rest from Settings).
  */
-export async function addDayExercise(programDayId: number, exerciseId: number): Promise<number> {
+export async function addDayExercise(programDayId: number, exerciseId: number, defaultRestSeconds = DEFAULT_REST_SECONDS): Promise<number> {
   return db.transaction('rw', db.programDayExercises, async () => {
     const count = await db.programDayExercises.where('programDayId').equals(programDayId).count()
     const existing = await db.programDayExercises.where('exerciseId').equals(exerciseId).first()
@@ -137,7 +137,7 @@ export async function addDayExercise(programDayId: number, exerciseId: number): 
       targetSets: existing?.targetSets ?? DEFAULT_TARGET_SETS,
       targetReps: existing?.targetReps ?? DEFAULT_TARGET_REPS,
       targetWeight: existing?.targetWeight ?? 0,
-      restSeconds: existing?.restSeconds ?? DEFAULT_REST_SECONDS,
+      restSeconds: existing?.restSeconds ?? defaultRestSeconds,
     }) as Promise<number>
   })
 }

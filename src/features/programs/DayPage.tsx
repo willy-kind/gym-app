@@ -11,6 +11,7 @@ import { moveItem } from '../../lib/order'
 import { formatTargetSummary } from '../../lib/format'
 import { TargetSheet } from './TargetSheet'
 import { ExercisePickerSheet } from './ExercisePickerSheet'
+import { useSettings } from '../settings/settingsStore'
 
 type Dialog = { kind: 'pick' } | { kind: 'target'; itemId: number } | { kind: 'remove'; itemId: number; name: string }
 
@@ -19,6 +20,7 @@ export function DayPage() {
   const programId = Number(params.programId)
   const dayId = Number(params.dayId)
   const detail = useLiveQuery(() => getDayDetail(dayId), [dayId])
+  const { unit, defaultRestSeconds } = useSettings()
   const [editing, setEditing] = useState(false)
   const [dialog, setDialog] = useState<Dialog | null>(null)
   const close = () => setDialog(null)
@@ -53,7 +55,7 @@ export function DayPage() {
               <EditRow
                 key={entry.item.id}
                 title={nameOf(entry)}
-                subtitle={formatTargetSummary(entry.item)}
+                subtitle={formatTargetSummary(entry.item, unit)}
                 onDelete={() => setDialog({ kind: 'remove', itemId: entry.item.id, name: nameOf(entry) })}
                 onUp={i > 0 ? () => void move(i, -1) : undefined}
                 onDown={i < items.length - 1 ? () => void move(i, 1) : undefined}
@@ -62,7 +64,7 @@ export function DayPage() {
               <ButtonRow
                 key={entry.item.id}
                 title={nameOf(entry)}
-                subtitle={formatTargetSummary(entry.item)}
+                subtitle={formatTargetSummary(entry.item, unit)}
                 onClick={() => setDialog({ kind: 'target', itemId: entry.item.id })}
               />
             ),
@@ -77,7 +79,7 @@ export function DayPage() {
           excludeIds={items.map((i) => i.item.exerciseId)}
           onClose={close}
           onPick={async (exerciseId) => {
-            const itemId = await addDayExercise(dayId, exerciseId)
+            const itemId = await addDayExercise(dayId, exerciseId, defaultRestSeconds)
             // Straight into its targets so a new exercise is set up in one go.
             setDialog({ kind: 'target', itemId })
           }}

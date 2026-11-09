@@ -1,5 +1,6 @@
 /** Pure logic for logging a session: which exercises to show, prefills, "Last time" text, what's next. */
 import { DEFAULT_TARGET_REPS, parseRepTarget } from './targets'
+import { formatMass, type WeightUnit } from './units'
 
 export interface SetValues {
   weight: number
@@ -111,14 +112,14 @@ export function prefillSet(input: {
 }
 
 /** Weight of one set: "80 kg", "BW", or "BW + 10 kg" for a loaded bodyweight exercise. */
-export function formatSetWeight(weight: number, bodyweight: boolean): string {
-  const kg = `${Number(weight.toFixed(2))} kg`
+export function formatSetWeight(weight: number, bodyweight: boolean, unit: WeightUnit = 'kg'): string {
   if (weight === 0) return 'BW'
-  return bodyweight ? `BW + ${kg}` : kg
+  const mass = formatMass(weight, unit)
+  return bodyweight ? `BW + ${mass}` : mass
 }
 
 /** "80 kg × 8, 8, 7"; mixed loads are grouped: "80 kg × 8 · 85 kg × 6, 5". Null if there are no sets. */
-export function formatSetsSummary(sets: readonly SetValues[], bodyweight: boolean): string | null {
+export function formatSetsSummary(sets: readonly SetValues[], bodyweight: boolean, unit: WeightUnit = 'kg'): string | null {
   if (sets.length === 0) return null
   const groups: { weight: number; reps: number[] }[] = []
   for (const s of sets) {
@@ -126,7 +127,7 @@ export function formatSetsSummary(sets: readonly SetValues[], bodyweight: boolea
     if (g && g.weight === s.weight) g.reps.push(s.reps)
     else groups.push({ weight: s.weight, reps: [s.reps] })
   }
-  return groups.map((g) => `${formatSetWeight(g.weight, bodyweight)} × ${g.reps.join(', ')}`).join(' · ')
+  return groups.map((g) => `${formatSetWeight(g.weight, bodyweight, unit)} × ${g.reps.join(', ')}`).join(' · ')
 }
 
 /** Next day in the rotation after the one last trained (wrapping), or the first day. */

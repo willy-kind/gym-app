@@ -28,6 +28,10 @@ export function updateSettings(changes: Partial<Settings>): void {
   for (const l of listeners) l()
 }
 
+export function useUnit() {
+  return useSettings().unit
+}
+
 export function useSettings(): Settings {
   return useSyncExternalStore(
     (onChange) => {

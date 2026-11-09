@@ -6,8 +6,11 @@ import { useLiveQuery } from '../../db/useLiveQuery'
 import { useNow } from '../../components/useNow'
 import { formatDay } from '../../lib/date'
 import { formatVolume, formatWeight } from '../../lib/format'
+import { toDisplay, type WeightUnit } from '../../lib/units'
+import { useUnit } from '../settings/settingsStore'
 import { filterRange, isBodyweightOnly, RANGES, summarize, type ProgressPoint, type RangeKey } from '../../lib/progress'
 import { LineChartCard, type ChartPoint } from './LineChartCard'
+import { Segmented } from '../../components/Segmented'
 
 interface Metric {
   title: string
@@ -17,14 +20,17 @@ interface Metric {
   unit: string
 }
 
-const kg = (v: number) => formatWeight(v)
 const reps = (v: number) => `${v} ${v === 1 ? 'rep' : 'reps'}`
 
-const WEIGHTED: Metric[] = [
-  { title: 'Top set', value: (p) => p.topWeight, label: (p) => `${formatWeight(p.topWeight)} × ${p.topReps}`, format: kg, unit: 'kg' },
-  { title: 'Estimated 1RM', value: (p) => p.e1rm, label: (p) => `${formatWeight(p.e1rm)} (from best set)`, format: kg, unit: 'kg' },
-  { title: 'Volume', value: (p) => p.volume, label: (p) => formatVolume(p.volume), format: (v) => formatVolume(v), unit: 'kg' },
-]
+/** Weight metrics, charted in the display unit (values are converted from kg). */
+function weighted(unit: WeightUnit): Metric[] {
+  const shown = (v: number) => `${Number(v.toFixed(1))} ${unit}`
+  return [
+    { title: 'Top set', value: (p) => toDisplay(p.topWeight, unit), label: (p) => `${formatWeight(p.topWeight, unit)} × ${p.topReps}`, format: shown, unit },
+    { title: 'Estimated 1RM', value: (p) => toDisplay(p.e1rm, unit), label: (p) => `${formatWeight(p.e1rm, unit)} (from best set)`, format: shown, unit },
+    { title: 'Volume', value: (p) => Math.round(toDisplay(p.volume, unit)), label: (p) => formatVolume(p.volume, unit), format: (v) => `${Math.round(v).toLocaleString('en-GB')} ${unit}`, unit },
+  ]
+}
 
 // Pure bodyweight: weight-based charts would sit flat at 0, so chart reps instead.
 const BODYWEIGHT: Metric[] = [
@@ -43,6 +49,7 @@ export default function ExerciseProgressPage() {
   const [range, setRange] = useState<RangeKey>('6m')
   const [showTable, setShowTable] = useState(false)
   const now = useNow(60_000)
+  const unit = useUnit()
   const back = { to: '/progress', label: 'Progress' }
 
   if (data === undefined) return <Page title="" back={back} />
@@ -55,24 +62,13 @@ export default function ExerciseProgressPage() {
   }
 
   const points = filterRange(data.points, range, now)
-  const metrics = isBodyweightOnly(data.points) ? BODYWEIGHT : WEIGHTED
+  const metrics = isBodyweightOnly(data.points) ? BODYWEIGHT : weighted(unit)
 
   return (
     <Page title={data.exercise.name} back={back}>
       {/* One filter row, above everything it scopes. */}
-      <div role="radiogroup" aria-label="Time range" className="mb-4 flex rounded-xl bg-surface-2 p-1">
-        {RANGES.map((r) => (
-          <button
-            key={r.key}
-            type="button"
-            role="radio"
-            aria-checked={range === r.key}
-            onClick={() => setRange(r.key)}
-            className={`min-h-11 flex-1 rounded-lg text-[15px] font-semibold ${range === r.key ? 'bg-surface text-label shadow' : 'text-label-2'}`}
-          >
-            {r.label}
-          </button>
-        ))}
+      <div className="mb-4">
+        <Segmented label="Time range" options={RANGES.map((r) => ({ value: r.key, label: r.label }))} value={range} onChange={setRange} />
       </div>
 
       {metrics.map((m) => {

@@ -40,3 +40,12 @@ describe('axis formatting', () => {
     expect(formatAxisDate(t, true)).toBe('Nov 26')
   })
 })
+
+describe('lb display', () => {
+  it('converts weights, targets and volume', () => {
+    expect(formatWeight(0, 'lb')).toBe('BW')
+    expect(formatWeight(75, 'lb')).toBe('165.3 lb')
+    expect(formatTargetSummary({ targetSets: 4, targetReps: '6-7', targetWeight: 75, restSeconds: 180 }, 'lb')).toBe('4 × 6-7 · 165.3 lb · 3:00 rest')
+    expect(formatVolume(1000, 'lb')).toBe('2,205 lb')
+  })
+})

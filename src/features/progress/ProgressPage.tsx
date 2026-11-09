@@ -4,10 +4,12 @@ import { listTrainedExercises } from '../../db/progress'
 import { useLiveQuery } from '../../db/useLiveQuery'
 import { formatDay } from '../../lib/date'
 import { formatWeight } from '../../lib/format'
+import { useUnit } from '../settings/settingsStore'
 
 /** Exercises you've trained, most recent first. Tap one for its charts. */
 export function ProgressPage() {
   const list = useLiveQuery(listTrainedExercises, [])
+  const unit = useUnit()
   return (
     <Page title="Progress">
       {list && list.length === 0 && <p className="mb-6 px-1 text-label-2">Charts appear here once you’ve logged some sets.</p>}
@@ -19,7 +21,7 @@ export function ProgressPage() {
               to={`/progress/${exercise.id}`}
               title={exercise.name}
               subtitle={`Last: ${formatDay(lastDate)} · ${sessions} ${sessions === 1 ? 'session' : 'sessions'}`}
-              detail={bestE1rm > 0 ? `e1RM ${formatWeight(bestE1rm)}` : undefined}
+              detail={bestE1rm > 0 ? `e1RM ${formatWeight(bestE1rm, unit)}` : undefined}
             />
           ))}
         </ListGroup>

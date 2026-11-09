@@ -146,6 +146,14 @@ describe('exercises within a day', () => {
     })
   })
 
+  it('uses the default rest from Settings for a brand-new exercise', async () => {
+    const id = await addDayExercise(await dayId('Lower A'), await findOrCreateExercise('Sled Push'), 75)
+    expect((await db.programDayExercises.get(id))?.restSeconds).toBe(75)
+    // An exercise already programmed elsewhere keeps its own rest.
+    const pull = await addDayExercise(await dayId('Lower A'), await exerciseId('Pull Up'), 75)
+    expect((await db.programDayExercises.get(pull))?.restSeconds).toBe(120)
+  })
+
   it('removes an exercise and renumbers the rest', async () => {
     const lowerB = await dayId('Lower B')
     const items = await db.programDayExercises.where('programDayId').equals(lowerB).sortBy('order')

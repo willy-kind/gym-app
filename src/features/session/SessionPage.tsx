@@ -13,7 +13,7 @@ import { buildSessionExercises, isBodyweightExercise, nextIncomplete, type Logge
 import { ExercisePickerSheet } from '../programs/ExercisePickerSheet'
 import { clearAdhoc, loadAdhoc, saveAdhoc } from './adhoc'
 import { clearRest, startRest } from './restTimerStore'
-import { DEFAULT_REST_SECONDS } from '../../lib/targets'
+import { getSettings } from '../settings/settingsStore'
 import { ExerciseCard } from './ExerciseCard'
 import { SetConsole } from './SetConsole'
 import { SetSheet } from './SetSheet'
@@ -58,7 +58,7 @@ function SessionScreen({ sessionId }: { sessionId: number }) {
   const log = async (e: SessionExercise, values: { weight: number; reps: number; isWarmup: boolean }) => {
     const saved = await attempt(() => logSet({ sessionId, exerciseId: e.exerciseId, ...values }))
     if (!saved) return
-    startRest(e.plan?.restSeconds ?? DEFAULT_REST_SECONDS, { sessionId, exerciseName: e.name })
+    startRest(e.plan?.restSeconds ?? getSettings().defaultRestSeconds, { sessionId, exerciseName: e.name })
     // Move on once the planned sets for this exercise are done.
     if (!values.isWarmup && e.plan && e.workingSets + 1 >= e.plan.targetSets) {
       const index = exercises.indexOf(e)

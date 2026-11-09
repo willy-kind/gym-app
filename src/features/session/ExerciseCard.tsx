@@ -1,6 +1,7 @@
 import type { Ref } from 'react'
 import { formatSetsSummary, formatSetWeight, type LoggedSet, type SessionExercise, type SetValues } from '../../lib/session'
 import { formatWeight } from '../../lib/format'
+import { useUnit } from '../settings/settingsStore'
 
 /** One exercise in the session: target, last time, and the sets logged so far. Tap to make it the active one. */
 export function ExerciseCard({
@@ -21,7 +22,8 @@ export function ExerciseCard({
   onEditSet: (set: LoggedSet) => void
 }) {
   const { plan, sets, done } = exercise
-  const last = formatSetsSummary(previous, bodyweight)
+  const unit = useUnit()
+  const last = formatSetsSummary(previous, bodyweight, unit)
   let working = 0
 
   return (
@@ -32,7 +34,7 @@ export function ExerciseCard({
           <span className="block text-[17px] font-semibold break-words">{exercise.name}</span>
           {plan && (
             <span className="block text-[15px] text-label-2 tabular-nums">
-              {plan.targetSets} × {plan.targetReps} · {formatWeight(plan.targetWeight ?? 0)}
+              {plan.targetSets} × {plan.targetReps} · {formatWeight(plan.targetWeight ?? 0, unit)}
             </span>
           )}
           <span className="block text-[15px] text-label-2 tabular-nums">{last ? `Last time: ${last}` : 'First time'}</span>
@@ -54,7 +56,7 @@ export function ExerciseCard({
                 <button type="button" onClick={() => onEditSet(s)} className="flex min-h-11 w-full items-center gap-3 px-4 text-left tabular-nums active:bg-surface-2">
                   <span className={`w-7 text-[15px] font-semibold ${s.isWarmup ? 'text-label-2' : 'text-accent'}`}>{s.isWarmup ? 'W' : working}</span>
                   <span className="flex-1 text-[17px]">
-                    {formatSetWeight(s.weight, bodyweight)} × {s.reps}
+                    {formatSetWeight(s.weight, bodyweight, unit)} × {s.reps}
                   </span>
                   <span className="text-[13px] text-label-2">Edit</span>
                 </button>

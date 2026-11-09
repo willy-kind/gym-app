@@ -1,9 +1,9 @@
 import { StepperInput } from '../../components/StepperInput'
 import { MAX_REPS, parseReps, parseWeight, weightInputText } from '../../lib/targets'
+import { weightStep, type WeightUnit } from '../../lib/units'
 
-export const WEIGHT_STEP = 2.5
-
-export function WeightInput({ text, onText, bodyweight }: { text: string; onText: (t: string) => void; bodyweight: boolean }) {
+/** Weight typed and stepped in the display unit; callers convert to kg. */
+export function WeightInput({ text, onText, bodyweight, unit }: { text: string; onText: (t: string) => void; bodyweight: boolean; unit: WeightUnit }) {
   return (
     <StepperInput
       label={bodyweight ? 'Extra weight' : 'Weight'}
@@ -11,12 +11,12 @@ export function WeightInput({ text, onText, bodyweight }: { text: string; onText
       onText={onText}
       parse={parseWeight}
       format={weightInputText}
-      step={WEIGHT_STEP}
+      step={weightStep(unit)}
       min={0}
-      max={1000}
+      max={unit === 'kg' ? 1000 : 2200}
       inputMode="decimal"
       placeholder="BW"
-      unit="kg"
+      unit={unit}
     />
   )
 }
