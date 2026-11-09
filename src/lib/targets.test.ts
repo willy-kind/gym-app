@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { clamp, cleanName, formatRepTarget, formatRest, MAX_NAME_LENGTH, parseRepTarget, parseWeight } from './targets'
+import { clamp, cleanName, formatRepTarget, formatRest, MAX_NAME_LENGTH, parseRepTarget, parseReps, parseWeight, weightInputText } from './targets'
 
 describe('parseRepTarget / formatRepTarget', () => {
   it('parses fixed and ranged targets', () => {
@@ -56,5 +56,24 @@ describe('cleanName', () => {
   it('rejects empty and too-long names', () => {
     expect(cleanName('   ')).toBeNull()
     expect(cleanName('x'.repeat(MAX_NAME_LENGTH + 1))).toBeNull()
+  })
+})
+
+describe('parseReps', () => {
+  it('accepts whole numbers 1–100', () => {
+    expect(parseReps('8')).toBe(8)
+    expect(parseReps(' 12 ')).toBe(12)
+    expect(parseReps('100')).toBe(100)
+  })
+  it('rejects empty, zero, decimals and junk', () => {
+    for (const bad of ['', '0', '7.5', '-3', 'x', '101']) expect(parseReps(bad)).toBeNull()
+  })
+})
+
+describe('weightInputText', () => {
+  it('leaves bodyweight empty and shows other weights plainly', () => {
+    expect(weightInputText(0)).toBe('')
+    expect(weightInputText(22.5)).toBe('22.5')
+    expect(parseWeight(weightInputText(61.25))).toBe(61.25)
   })
 })

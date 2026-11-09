@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router'
 import { TabBar } from './components/TabBar'
 import { UpdateToast } from './components/UpdateToast'
 import { TrainPage } from './features/session/TrainPage'
+import { SessionPage } from './features/session/SessionPage'
 import { ProgramsPage } from './features/programs/ProgramsPage'
 import { ProgramPage } from './features/programs/ProgramPage'
 import { DayPage } from './features/programs/DayPage'
@@ -15,6 +16,7 @@ export function App() {
       <main className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
         <Routes>
           <Route path="/train" element={<TrainPage />} />
+          <Route path="/train/session/:sessionId" element={<SessionPage />} />
           <Route path="/programs" element={<ProgramsPage />} />
           <Route path="/programs/exercises" element={<ExercisesPage />} />
           <Route path="/programs/:programId" element={<ProgramPage />} />

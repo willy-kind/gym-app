@@ -44,8 +44,9 @@ export interface WorkoutSet {
   id?: number
   sessionId: number
   exerciseId: number
+  /** 0-based set number for this exercise within the session (warm-ups included). */
   order: number
-  /** kg; 0 = bodyweight (plus any extra load) */
+  /** kg; 0 = bodyweight. For a bodyweight exercise, a positive value is the extra load. */
   weight: number
   reps: number
   isWarmup: boolean

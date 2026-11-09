@@ -57,3 +57,16 @@ export function cleanName(text: string): string | null {
   if (t === '' || t.length > MAX_NAME_LENGTH) return null
   return t
 }
+
+/** Reps as typed on the numeric keypad: a whole number 1–100, else null. */
+export function parseReps(text: string): number | null {
+  const t = text.trim()
+  if (!/^\d+$/.test(t)) return null
+  const n = Number(t)
+  return n >= 1 && n <= MAX_REPS ? n : null
+}
+
+/** Weight for an input box: bodyweight (0) is left empty so the "BW" placeholder shows. */
+export function weightInputText(kg: number): string {
+  return kg === 0 ? '' : String(kg)
+}
