@@ -21,6 +21,8 @@ Tick each box. If something fails, note the step number and what you saw.
 - [ ] 1.1 Open the URL in **Safari** → Share → **Add to Home Screen**. The name is "Gym" and the icon is a blue dumbbell on black.
 - [ ] 1.2 Open it from the Home Screen: full screen, no Safari address bar or toolbar.
 - [ ] 1.3 The clock/battery area doesn't cover any text; the tab bar sits above the home indicator.
+- [ ] 1.3a The tab bar's background reaches the very bottom edge of the screen (no black band under it); its labels sit above the home indicator.
+- [ ] 1.3c The gear icon on Train is crisp, with no blue halo, also after tapping it and coming back.
 - [ ] 1.3b The gear icon on Train and the Edit/Done buttons sit fully below the Dynamic Island: right after launch, after switching to another app and back, and after using the keyboard.
 - [ ] 1.4 Four tabs work: **Train / Programs / History / Progress**. Train is selected on launch.
 - [ ] 1.5 After a few seconds a "Ready to work offline" banner appears once; **OK** dismisses it.

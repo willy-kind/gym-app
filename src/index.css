@@ -73,6 +73,16 @@ body {
   -webkit-touch-callout: none;
 }
 
+/* No grey flash or focus ring after a tap; keyboard focus still gets the ring. */
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
 /* ≥16px on inputs stops iOS zooming in on focus. */
 input,
 select,

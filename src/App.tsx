@@ -19,7 +19,9 @@ const ExerciseProgressPage = lazy(() => import('./features/progress/ExerciseProg
 
 export function App() {
   return (
-    <div className="flex h-dvh flex-col">
+    // Pinned to the screen edges rather than sized with 100dvh: in iOS standalone mode
+    // dvh can come out a status-bar height short, leaving a band under the tab bar.
+    <div className="fixed inset-0 flex flex-col">
       <main className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
         <Routes>
           <Route path="/train" element={<TrainPage />} />
