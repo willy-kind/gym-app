@@ -8,6 +8,7 @@ import { MAX_REST_SECONDS, formatRest } from '../../lib/targets'
 import { MIN_DEFAULT_REST_SECONDS, REST_STEP_SECONDS } from '../../lib/settings'
 import { DEFAULT_AI_QUESTION, MAX_AI_QUESTION_LENGTH } from '../../lib/aiExport'
 import { BackupSection } from '../import-export/BackupSection'
+import { StrongImportSection } from '../import-export/StrongImportSection'
 import { unlockAudio, playRestDone } from '../session/sound'
 import { updateSettings, useSettings } from './settingsStore'
 
@@ -88,6 +89,8 @@ export function SettingsPage() {
       </ListGroup>
 
       <BackupSection />
+
+      <StrongImportSection />
 
       {persisted !== null && (
         <p className="mt-4 px-1 text-[13px] text-label-2">

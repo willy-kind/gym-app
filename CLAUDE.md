@@ -48,7 +48,7 @@ Use Dexie versioned schema migrations — never change a schema without bumping 
 7. **Backup / restore**:
    - Export all data as a JSON file (via share sheet / download).
    - Import that JSON back (full restore, with a confirmation step).
-   - No import from other apps.
+   - No import from other apps, except a Strong CSV export (Settings → Import from Strong; added on request).
 8. **Settings**: rest timer default, kg/lb display, "Last backup" date with a reminder if older than 14 days.
 
 ## iOS PWA gotchas (important)

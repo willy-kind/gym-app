@@ -130,6 +130,8 @@ Have at least 3 finished workouts with different weights first (History → Edit
 - [ ] 8.7 Restore again and tap **Replace all data**: "Restored N workouts…"; the change from 8.5 is gone and everything else matches the backup (programs, history, charts).
 - [ ] 8.8 Pick a file that isn't a backup (any other file from Files): a clear error, nothing changes.
 - [ ] 8.9 **Real disaster test:** export a backup, delete the app from the Home Screen, reinstall it from Safari (starter program only), restore the backup: all workouts and programs are back.
+- [ ] 8.10 **Import from Strong:** export a backup first. In Strong: Settings → Export data → save the CSV to Files. Here: Settings → **Choose Strong CSV…** → pick it: a preview shows the number of workouts and sets, the date range, new exercises, rows skipped (cardio), and a kg/lb choice. Nothing changes until **Import N workouts**.
+- [ ] 8.11 After importing: History shows the Strong workouts (titled "Workout", note "Strong: Upper A"), Progress charts and PRs include them, and "Share with AI" shows rest times from Strong's rest timer. Import the same file again: "Nothing new to import". A non-Strong CSV gives a clear error.
 
 ## 9. Settings
 
