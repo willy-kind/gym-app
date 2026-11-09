@@ -7,7 +7,7 @@ import { useLiveQuery } from '../../db/useLiveQuery'
 import { formatDay } from '../../lib/date'
 import { countOf } from '../../lib/format'
 import { shareTextForWorkout, shareTextForWorkouts } from '../../lib/aiExport'
-import { useUnit } from '../settings/settingsStore'
+import { useSettings } from '../settings/settingsStore'
 
 type Outcome = 'shared' | 'copied' | 'cancelled' | 'failed'
 
@@ -52,11 +52,11 @@ function useShare() {
 
 /** "Share with AI" for one finished workout (workout detail screen). */
 export function ShareWorkoutButton({ sessionId }: { sessionId: number }) {
-  const unit = useUnit()
+  const { unit, aiQuestion } = useSettings()
   const text = useLiveQuery(async () => {
     const w = await getShareWorkout(sessionId)
-    return w ? shareTextForWorkout(w, unit) : null
-  }, [sessionId, unit])
+    return w ? shareTextForWorkout(w, unit, aiQuestion) : null
+  }, [sessionId, unit, aiQuestion])
   const { share, message } = useShare()
   return (
     <>
@@ -70,7 +70,7 @@ export function ShareWorkoutButton({ sessionId }: { sessionId: number }) {
 
 /** Sheet to share recent workouts: last 4, last 8 or the last 4 weeks, with a preview of the text. */
 export function ShareRecentSheet({ onClose }: { onClose: () => void }) {
-  const unit = useUnit()
+  const { unit, aiQuestion } = useSettings()
   const [range, setRange] = useState<ShareRange>('last4')
   const data = useLiveQuery(async () => {
     const workouts = await getShareWorkouts(range)
@@ -78,9 +78,9 @@ export function ShareRecentSheet({ onClose }: { onClose: () => void }) {
       count: workouts.length,
       from: workouts[0]?.startedAt,
       to: workouts.at(-1)?.startedAt,
-      text: workouts.length > 0 ? shareTextForWorkouts(workouts, unit) : null,
+      text: workouts.length > 0 ? shareTextForWorkouts(workouts, unit, aiQuestion) : null,
     }
-  }, [range, unit])
+  }, [range, unit, aiQuestion])
   const { share, message } = useShare()
 
   return (
@@ -105,7 +105,7 @@ export function ShareRecentSheet({ onClose }: { onClose: () => void }) {
       </Button>
       {message && <p className="mb-2 px-1 text-[13px] text-label-2">{message}</p>}
       <p className="mb-2 px-1 text-[13px] text-label-2">
-        Opens the share sheet: pick your AI app (Claude, ChatGPT, …), or Copy and paste it into a chat. Includes a short question asking for feedback.
+        Opens the share sheet: pick your AI app (Claude, ChatGPT, …), or Copy and paste it into a chat. Starts with your question for the AI (change it in Settings).
       </p>
     </Sheet>
   )

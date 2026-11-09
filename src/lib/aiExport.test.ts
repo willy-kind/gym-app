@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatShareDate, restBetween, shareTextForWorkout, shareTextForWorkouts, type ShareWorkout } from './aiExport'
+import { DEFAULT_AI_QUESTION, aiPrompt, formatShareDate, restBetween, shareTextForWorkout, shareTextForWorkouts, type ShareWorkout } from './aiExport'
 
 const at = (h: number, m: number, s = 0, day = 6) => new Date(2026, 10, day, h, m, s).getTime()
 
@@ -51,7 +51,7 @@ describe('shareTextForWorkout', () => {
 
   it('starts with the question and the workout header', () => {
     expect(text.startsWith('I track my strength training')).toBe(true)
-    expect(text).toContain('Weights are in kg.')
+    expect(text).toContain('How to read the log: weights are in kg.')
     expect(text).toContain(`Workout: Upper A (Upper/Lower) — ${formatShareDate(upperA.startedAt)}, 18:05–18:57 (52 min)`)
     expect(text).toContain('Notes: Felt strong')
   })
@@ -74,7 +74,7 @@ describe('shareTextForWorkout', () => {
 
   it('uses lb when asked', () => {
     const lb = shareTextForWorkout(upperA, 'lb')
-    expect(lb).toContain('Weights are in lb.')
+    expect(lb).toContain('weights are in lb.')
     expect(lb).toContain('170.9 lb × 6 · rest 2:00 (PR)')
   })
 })
@@ -90,5 +90,18 @@ describe('shareTextForWorkouts', () => {
     expect(text.indexOf(formatShareDate(upperA.startedAt) + ', 18:05')).toBeLessThan(text.indexOf(formatShareDate(later.startedAt) + ', 18:05'))
     expect(text).not.toContain('— target')
     expect(text.match(/^---$/gm)).toHaveLength(2)
+  })
+})
+
+describe('aiPrompt', () => {
+  it('uses your question, then always explains the log format', () => {
+    const p = aiPrompt('kg', '  How is my bench going?  ')
+    expect(p.startsWith('How is my bench going?\n\nHow to read the log: weights are in kg.')).toBe(true)
+    expect(shareTextForWorkout(upperA, 'kg', 'Short question').startsWith('Short question\n')).toBe(true)
+  })
+
+  it('falls back to the default for no or a blank question', () => {
+    expect(aiPrompt('kg').startsWith(DEFAULT_AI_QUESTION)).toBe(true)
+    expect(aiPrompt('kg', '   ').startsWith(DEFAULT_AI_QUESTION)).toBe(true)
   })
 })

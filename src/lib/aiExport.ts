@@ -48,12 +48,20 @@ const MIN_REST_S = 10
 /** Longer gaps are breaks (or a set logged late), not rest between sets. */
 const MAX_REST_S = 30 * 60
 
-export function aiPrompt(unit: WeightUnit): string {
-  return [
-    'I track my strength training in my gym app. Below is my log.',
-    `Weights are in ${unit}. "W" = warm-up set, "PR" = personal record when logged, "rest" = time since the previous set of that exercise, "BW" = bodyweight. Targets are what my program prescribes.`,
-    'Please give me feedback on my progression, training volume and rest times, point out anything that looks off (stalls, fatigue, imbalances, sets far from target), and suggest concrete changes for my next sessions.',
-  ].join('\n')
+/** The question at the top of shared text, unless you've written your own in Settings. */
+export const DEFAULT_AI_QUESTION =
+  'I track my strength training in my gym app. Below is my log. Please give me feedback on my progression, training volume and rest times, point out anything that looks off (stalls, fatigue, imbalances, sets far from target), and suggest concrete changes for my next sessions.'
+
+export const MAX_AI_QUESTION_LENGTH = 2000
+
+/**
+ * Your question (or the default), then a fixed note on how to read the log, so
+ * the format is always explained whatever the question says.
+ */
+export function aiPrompt(unit: WeightUnit, question?: string): string {
+  const q = question?.trim() || DEFAULT_AI_QUESTION
+  const legend = `How to read the log: weights are in ${unit}. "W" = warm-up set, "PR" = personal record when logged, "rest" = time since the previous set of that exercise, "BW" = bodyweight. Targets are what my program prescribes.`
+  return [q, '', legend].join('\n')
 }
 
 /** "Fri 6 Nov 2026" */
@@ -110,17 +118,17 @@ function workoutLines(w: ShareWorkout, unit: WeightUnit, opts: { targets: boolea
 }
 
 /** One workout, with targets and last time per exercise. */
-export function shareTextForWorkout(w: ShareWorkout, unit: WeightUnit): string {
-  return [aiPrompt(unit), '', ...workoutLines(w, unit, { targets: true })].join('\n')
+export function shareTextForWorkout(w: ShareWorkout, unit: WeightUnit, question?: string): string {
+  return [aiPrompt(unit, question), '', ...workoutLines(w, unit, { targets: true })].join('\n')
 }
 
 /**
  * Several workouts, oldest first. The program targets are listed once at the top
  * (per day, as they are now) instead of under every workout.
  */
-export function shareTextForWorkouts(workouts: readonly ShareWorkout[], unit: WeightUnit): string {
+export function shareTextForWorkouts(workouts: readonly ShareWorkout[], unit: WeightUnit, question?: string): string {
   const ordered = [...workouts].sort((a, b) => a.startedAt - b.startedAt)
-  const lines = [aiPrompt(unit), '']
+  const lines = [aiPrompt(unit, question), '']
   const seenDays = new Set<string>()
   const targetLines: string[] = []
   for (const w of ordered) {

@@ -1,6 +1,7 @@
 /** App preferences. Kept on the device (not in backups): they describe this phone, not your training. */
 import { DEFAULT_REST_SECONDS, MAX_REST_SECONDS } from './targets'
 import type { WeightUnit } from './units'
+import { MAX_AI_QUESTION_LENGTH } from './aiExport'
 
 export interface Settings {
   unit: WeightUnit
@@ -10,6 +11,8 @@ export interface Settings {
   timerSound: boolean
   /** When a backup was last exported from this phone. */
   lastBackupAt?: number
+  /** Your own question at the top of "Share with AI" text; absent or blank means the default. */
+  aiQuestion?: string
 }
 
 export const DEFAULT_SETTINGS: Settings = { unit: 'kg', defaultRestSeconds: DEFAULT_REST_SECONDS, timerSound: false }
@@ -38,6 +41,7 @@ export function parseSettings(json: string | null): Settings {
   }
   if (typeof r.timerSound === 'boolean') s.timerSound = r.timerSound
   if (typeof r.lastBackupAt === 'number' && Number.isFinite(r.lastBackupAt)) s.lastBackupAt = r.lastBackupAt
+  if (typeof r.aiQuestion === 'string') s.aiQuestion = r.aiQuestion.slice(0, MAX_AI_QUESTION_LENGTH)
   return s
 }
 

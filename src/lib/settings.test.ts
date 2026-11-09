@@ -23,6 +23,12 @@ describe('parseSettings', () => {
     expect(parseSettings(JSON.stringify({ defaultRestSeconds: 601 })).defaultRestSeconds).toBe(120)
     expect(parseSettings(JSON.stringify({ defaultRestSeconds: 92.5 })).defaultRestSeconds).toBe(120)
   })
+
+  it('keeps your AI question (capped in length) and drops a non-string', () => {
+    expect(parseSettings(JSON.stringify({ aiQuestion: 'How is my squat?' })).aiQuestion).toBe('How is my squat?')
+    expect(parseSettings(JSON.stringify({ aiQuestion: 'x'.repeat(5000) })).aiQuestion).toHaveLength(2000)
+    expect(parseSettings(JSON.stringify({ aiQuestion: 42 })).aiQuestion).toBeUndefined()
+  })
 })
 
 describe('backupReminder', () => {
