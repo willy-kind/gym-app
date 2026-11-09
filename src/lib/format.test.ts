@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatAxisDate, formatAxisNumber, formatTargetSummary, formatVolume, formatWeight } from './format'
+import { countOf, formatAxisDate, formatAxisNumber, formatTargetSummary, formatVolume, formatWeight } from './format'
 
 describe('formatWeight', () => {
   it('shows 0 as BW', () => expect(formatWeight(0)).toBe('BW'))
@@ -47,5 +47,15 @@ describe('lb display', () => {
     expect(formatWeight(75, 'lb')).toBe('165.3 lb')
     expect(formatTargetSummary({ targetSets: 4, targetReps: '6-7', targetWeight: 75, restSeconds: 180 }, 'lb')).toBe('4 × 6-7 · 165.3 lb · 3:00 rest')
     expect(formatVolume(1000, 'lb')).toBe('2,205 lb')
+  })
+})
+
+describe('countOf', () => {
+  it('uses the singular only for exactly one', () => {
+    expect(countOf(1, 'program')).toBe('1 program')
+    expect(countOf(0, 'program')).toBe('0 programs')
+    expect(countOf(2, 'exercise')).toBe('2 exercises')
+    expect(countOf(1, 'person', 'people')).toBe('1 person')
+    expect(countOf(3, 'person', 'people')).toBe('3 people')
   })
 })

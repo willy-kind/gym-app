@@ -9,7 +9,7 @@ import { addSetToSession } from '../../db/history'
 import { deleteSet, discardSession, getSessionView, updateSet } from '../../db/sessions'
 import { useLiveQuery } from '../../db/useLiveQuery'
 import { formatClock, formatDay, formatDuration } from '../../lib/date'
-import { formatVolume } from '../../lib/format'
+import { countOf, formatVolume } from '../../lib/format'
 import { sessionStats } from '../../lib/history'
 import { buildSessionExercises, formatSetWeight, isBodyweightExercise, type LoggedSet, type SessionExercise } from '../../lib/session'
 import { ExercisePickerSheet } from '../programs/ExercisePickerSheet'
@@ -71,7 +71,7 @@ export function SessionDetailPage() {
         />
       </ListGroup>
       <p className="-mt-4 mb-6 px-4 text-[13px] text-label-2 tabular-nums">
-        {[view.program?.name, `${stats.workingSets} sets`, `${stats.exercises} exercises`, `${formatVolume(stats.volume, unit)} volume`].filter(Boolean).join(' · ')}
+        {[view.program?.name, countOf(stats.workingSets, 'set'), countOf(stats.exercises, 'exercise'), `${formatVolume(stats.volume, unit)} volume`].filter(Boolean).join(' · ')}
       </p>
 
       {exercises.length === 0 && <p className="mb-6 px-1 text-label-2">No sets in this workout.</p>}

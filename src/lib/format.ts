@@ -33,3 +33,8 @@ export function formatAxisDate(timestamp: number, spansYears: boolean): string {
   if (spansYears) return `${d.toLocaleDateString('en-GB', { month: 'short' })} ${String(d.getFullYear()).slice(2)}`
   return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
 }
+
+/** "1 set", "3 sets"; pass the plural when adding an s isn't right. */
+export function countOf(n: number, singular: string, plural = `${singular}s`): string {
+  return `${n} ${n === 1 ? singular : plural}`
+}

@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { countOf } from '../../lib/format'
 import { ListGroup } from '../../components/List'
 import { Button } from '../../components/Button'
 import { Sheet } from '../../components/Sheet'
@@ -79,7 +80,7 @@ export function BackupSection() {
       clearRest()
       setPending(null)
       const c = backupCounts(backup.data)
-      setMessage({ text: `Restored ${c.sessions} workouts and ${c.programs} programs.` })
+      setMessage({ text: `Restored ${countOf(c.sessions, 'workout')} and ${countOf(c.programs, 'program')}.` })
     } catch (e) {
       setMessage({ text: `Restore failed; nothing was changed. ${e instanceof Error ? e.message : String(e)}`, error: true })
     } finally {
@@ -126,7 +127,7 @@ export function BackupSection() {
       </div>
       {prepared && (
         <p className="mb-2 px-1 text-[13px] text-label-2">
-          Ready: {prepared.counts.sessions} workouts, {prepared.counts.sets} sets, {prepared.counts.programs} programs. Tap above, then “Save to Files”.
+          Ready: {countOf(prepared.counts.sessions, 'workout')}, {countOf(prepared.counts.sets, 'set')}, {countOf(prepared.counts.programs, 'program')}. Tap above, then “Save to Files”.
         </p>
       )}
       {message && <p className={`mb-4 px-1 text-[15px] ${message.error ? 'text-danger' : 'text-label-2'}`}>{message.text}</p>}
@@ -139,7 +140,7 @@ export function BackupSection() {
           <p className="mb-3 px-1 text-label-2">
             {(() => {
               const c = backupCounts(pending.backup.data)
-              return `${c.sessions} workouts · ${c.sets} sets · ${c.programs} programs · ${c.exercises} exercises`
+              return [countOf(c.sessions, 'workout'), countOf(c.sets, 'set'), countOf(c.programs, 'program'), countOf(c.exercises, 'exercise')].join(' · ')
             })()}
           </p>
           <p className="mb-4 px-1 font-semibold text-danger">
