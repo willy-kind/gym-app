@@ -1,5 +1,4 @@
 /// <reference types="vitest/config" />
-import { execSync } from 'node:child_process'
 import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { defineConfig, type Plugin } from 'vite'
@@ -35,21 +34,9 @@ function seedFromPrograms(): Plugin {
 
 const THEME = '#000000'
 
-// TEMPORARY (debug overlay): which commit and when, so the phone can show what it runs.
-function buildStamp(): string {
-  let sha = 'unknown'
-  try {
-    sha = execSync('git rev-parse --short HEAD', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim()
-  } catch {
-    // Not a git checkout.
-  }
-  return `${sha} · built ${new Date().toISOString().slice(0, 16).replace('T', ' ')} UTC`
-}
-
 export default defineConfig({
   // GitHub Pages serves the site at /<repo>/
   base: '/gym-app/',
-  define: { __APP_BUILD__: JSON.stringify(buildStamp()) },
   plugins: [
     seedFromPrograms(),
     react(),
