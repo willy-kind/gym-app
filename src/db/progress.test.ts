@@ -31,6 +31,7 @@ describe('progress queries', () => {
       ['Pull Up', 1, 2_000_000],
     ])
     expect(list[0]!.bestE1rm).toBe(96) // 80 × (1 + 6/30)
+    expect(list[1]!.bestReps).toBe(4)
   })
 
   it('builds one point per session dated by session start', async () => {

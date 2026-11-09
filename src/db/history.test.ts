@@ -41,6 +41,16 @@ describe('listHistory', () => {
     expect(list.total).toBe(3)
     expect(list.items[0]!.session.startedAt).toBe(3_000_000)
   })
+
+  it('counts the personal records set in each workout, and names the one in progress', async () => {
+    await workout('Upper A', 1_000_000, [['Bench Press (Barbell)', 75, 6]])
+    await workout('Upper A', 2_000_000, [['Bench Press (Barbell)', 77.5, 6], ['Bench Press (Barbell)', 80, 5], ['Bench Press (Barbell)', 75, 6]])
+    await workout('Upper A', 3_000_000, [['Bench Press (Barbell)', 75, 6]])
+    await startSession(await dayId('Lower A'), 4_000_000)
+    const list = await listHistory(10)
+    expect(list.items.map((i) => i.prCount)).toEqual([0, 2, 0])
+    expect(list.activeTitle).toBe('Lower A')
+  })
 })
 
 describe('editing a past session', () => {

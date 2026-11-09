@@ -11,12 +11,12 @@ import { useLiveQuery } from '../../db/useLiveQuery'
 import { formatClock, formatDay, formatDuration } from '../../lib/date'
 import { countOf, formatVolume } from '../../lib/format'
 import { sessionStats } from '../../lib/history'
-import { buildSessionExercises, formatSetWeight, isBodyweightExercise, type LoggedSet, type SessionExercise } from '../../lib/session'
+import { buildSessionExercises, isBodyweightExercise, type LoggedSet, type SessionExercise } from '../../lib/session'
 import { ExercisePickerSheet } from '../programs/ExercisePickerSheet'
 import { SetSheet, type SetValuesInput } from '../session/SetSheet'
 import { NotesSheet, TimesSheet } from './EditSheets'
 import { useUnit } from '../settings/settingsStore'
-import { PRBadge } from '../../components/PRBadge'
+import { SetPill } from '../session/SetPill'
 
 type Dialog =
   | { kind: 'edit'; set: LoggedSet; bodyweight: boolean }
@@ -61,7 +61,9 @@ export function SessionDetailPage() {
       <ListGroup>
         <ButtonRow
           title={formatDay(session.startedAt)}
-          subtitle={`${formatClock(session.startedAt)}–${formatClock(session.finishedAt)} · ${formatDuration(session.finishedAt - session.startedAt)}`}
+          subtitle={[view.program?.name, `${formatClock(session.startedAt)}–${formatClock(session.finishedAt)}`, formatDuration(session.finishedAt - session.startedAt)]
+            .filter(Boolean)
+            .join(' · ')}
           detail={<span className="text-accent">Edit</span>}
           onClick={() => setDialog({ kind: 'times' })}
         />
@@ -71,9 +73,12 @@ export function SessionDetailPage() {
           onClick={() => setDialog({ kind: 'notes' })}
         />
       </ListGroup>
-      <p className="-mt-4 mb-6 px-4 text-[13px] text-label-2 tabular-nums">
-        {[view.program?.name, countOf(stats.workingSets, 'set'), countOf(stats.exercises, 'exercise'), `${formatVolume(stats.volume, unit)} volume`].filter(Boolean).join(' · ')}
-      </p>
+      <div className="-mt-3 mb-6 grid grid-cols-3 gap-2">
+        <StatTile value={String(stats.workingSets)} label={stats.workingSets === 1 ? 'set' : 'sets'} />
+        <StatTile value={String(stats.exercises)} label={stats.exercises === 1 ? 'exercise' : 'exercises'} />
+        {/* "2,170 kg" → big "2,170", caption "kg volume", so long totals still fit the tile. */}
+        <StatTile value={formatVolume(stats.volume, unit).replace(/ (kg|lb)$/, '')} label={`${unit} volume`} />
+      </div>
 
       {exercises.length === 0 && <p className="mb-6 px-1 text-label-2">No sets in this workout.</p>}
       {exercises.map((e) => {
@@ -81,27 +86,31 @@ export function SessionDetailPage() {
         const last = e.sets.at(-1)
         let working = 0
         return (
-          <ListGroup key={e.exerciseId} header={e.name}>
-            {e.sets.map((s) => {
-              if (!s.isWarmup) working++
-              return (
-                <ButtonRow
-                  key={s.id}
-                  title={
-                    <span className="flex items-center gap-3 tabular-nums">
-                      <span className={`w-7 font-semibold ${s.isWarmup ? 'text-label-2' : 'text-accent'}`}>{s.isWarmup ? 'W' : working}</span>
-                      <span>
-                        {formatSetWeight(s.weight, bw, unit)} × {s.reps}
-                      </span>
-                      {view.prSetIds.has(s.id) && <PRBadge />}
-                    </span>
-                  }
-                  onClick={() => setDialog({ kind: 'edit', set: s, bodyweight: bw })}
-                />
-              )
-            })}
-            <ButtonRow
-              title={<span className="text-accent">Add set</span>}
+          <section key={e.exerciseId} className="card-edge mb-3 rounded-xl bg-surface p-4">
+            <div className="mb-2.5 flex items-start justify-between gap-3">
+              <h2 className="min-w-0 text-[17px] font-semibold break-words">{e.name}</h2>
+              <span className="shrink-0 text-[15px] font-semibold text-label-2 tabular-nums">{countOf(e.workingSets, 'set')}</span>
+            </div>
+            <ul className="flex flex-col gap-1.5">
+              {e.sets.map((s) => {
+                if (!s.isWarmup) working++
+                return (
+                  <li key={s.id}>
+                    <SetPill
+                      set={s}
+                      label={s.isWarmup ? 'W' : String(working)}
+                      bodyweight={bw}
+                      unit={unit}
+                      pr={view.prSetIds.has(s.id)}
+                      onEdit={() => setDialog({ kind: 'edit', set: s, bodyweight: bw })}
+                    />
+                  </li>
+                )
+              })}
+            </ul>
+            <button
+              type="button"
+              className="mt-1.5 min-h-11 text-[15px] font-semibold text-accent active:opacity-60"
               onClick={() =>
                 setDialog({
                   kind: 'add',
@@ -111,8 +120,10 @@ export function SessionDetailPage() {
                   bodyweight: bw,
                 })
               }
-            />
-          </ListGroup>
+            >
+              + Add set
+            </button>
+          </section>
         )
       })}
 
@@ -174,5 +185,14 @@ export function SessionDetailPage() {
         />
       )}
     </Page>
+  )
+}
+
+function StatTile({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="card-edge min-w-0 rounded-xl bg-surface px-3 py-2.5">
+      <div className="truncate text-[20px] font-bold tabular-nums">{value}</div>
+      <div className="text-[13px] text-label-2">{label}</div>
+    </div>
   )
 }

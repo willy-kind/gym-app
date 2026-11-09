@@ -95,9 +95,9 @@ Tick each box. If something fails, note the step number and what you saw.
 
 ## 6. History
 
-- [ ] 6.1 History lists finished workouts newest first under a month heading, e.g. "Upper A — Today · 52 min · 24 sets".
-- [ ] 6.2 A workout in progress shows at the top as **Workout in progress** and opens it.
-- [ ] 6.3 Open a workout: date/times row, notes row, summary (sets · exercises · volume), and each exercise's sets in the order done.
+- [ ] 6.1 History lists finished workouts newest first under a month heading, e.g. "Upper A — Today · 52 min · 24 sets". Workouts that set personal records show "↑ 2 PR" on the right.
+- [ ] 6.2 A workout in progress shows at the top as a blue-outlined **Workout in progress** card ("Lower A · Started 18:05 · 24 min") and opens it.
+- [ ] 6.3 Open a workout: date row (program · times · duration), notes row, three tiles (sets, exercises, kg volume), and each exercise as a card with its sets as rounded rows (PRs marked) and **+ Add set**.
 - [ ] 6.4 Edit a set, delete a set, **Add set** (prefilled from the last set), **Add exercise** + save a set.
 - [ ] 6.5 Tap the date row → **Edit times**: the iOS date/time pickers open. Move the start to yesterday → Save: the row says "Yesterday". Starting that day again shows those sets as "Last time".
 - [ ] 6.6 Set finish before start → error, nothing saved.
@@ -108,7 +108,7 @@ Tick each box. If something fails, note the step number and what you saw.
 
 Have at least 3 finished workouts with different weights first (History → Edit times helps spread the dates).
 
-- [ ] 7.1 Progress lists trained exercises, most recent first, with last date, session count and best e1RM.
+- [ ] 7.1 Progress lists trained exercises, most recent first, with last date and session count; on the right the best e1RM, or "best set" reps for bodyweight-only exercises.
 - [ ] 7.2 Open **Bench Press**: three charts — **Top set**, **Estimated 1RM**, **Volume** — each a blue line with dots and the latest value labelled at the right end. Nothing clipped at the edges; date labels don't overlap.
 - [ ] 7.3 Touch and drag across a chart: a vertical line and a tooltip follow your finger ("85 kg × 6", date).
 - [ ] 7.4 **3M / 6M / 1Y / All** change all three charts and their "Best … · +x in this period" lines together.

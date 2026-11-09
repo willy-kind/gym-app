@@ -10,26 +10,29 @@ export interface TrainedExercise {
   lastDate: number
   sessions: number
   bestE1rm: number
+  /** Most reps in one working set (shown for bodyweight-only exercises). */
+  bestReps: number
 }
 
 /** Exercises with at least one working set, most recently trained first. */
 export async function listTrainedExercises(): Promise<TrainedExercise[]> {
   const [sets, sessions, exercises] = await Promise.all([db.sets.toArray(), db.sessions.toArray(), db.exercises.toArray()])
   const startedAt = new Map(sessions.map((s) => [s.id!, s.startedAt]))
-  const byExercise = new Map<number, { last: number; sessions: Set<number>; best: number }>()
+  const byExercise = new Map<number, { last: number; sessions: Set<number>; best: number; reps: number }>()
   for (const s of sets) {
     if (s.isWarmup) continue
-    const e = byExercise.get(s.exerciseId) ?? { last: 0, sessions: new Set<number>(), best: 0 }
+    const e = byExercise.get(s.exerciseId) ?? { last: 0, sessions: new Set<number>(), best: 0, reps: 0 }
     e.last = Math.max(e.last, startedAt.get(s.sessionId) ?? s.completedAt)
     e.sessions.add(s.sessionId)
     e.best = Math.max(e.best, epley(s.weight, s.reps))
+    e.reps = Math.max(e.reps, s.reps)
     byExercise.set(s.exerciseId, e)
   }
   return exercises
     .filter((e) => byExercise.has(e.id!))
     .map((e) => {
       const x = byExercise.get(e.id!)!
-      return { exercise: e as WithId<Exercise>, lastDate: x.last, sessions: x.sessions.size, bestE1rm: x.best }
+      return { exercise: e as WithId<Exercise>, lastDate: x.last, sessions: x.sessions.size, bestE1rm: x.best, bestReps: x.reps }
     })
     .sort((a, b) => b.lastDate - a.lastDate)
 }

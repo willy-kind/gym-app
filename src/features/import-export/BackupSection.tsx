@@ -92,44 +92,41 @@ export function BackupSection() {
 
   return (
     <>
-      <ListGroup
-        header="Backup"
-        footer="Your data only lives on this phone. Export a backup regularly and keep it in Files or iCloud Drive."
-      >
-        <li className="px-4 py-3">
-          <p className="text-[15px] text-label-2">
+      <ListGroup header="Backup">
+        <li className="px-4 pt-3 pb-4">
+          <p className="text-[17px]">
             {lastBackupAt ? `Last backup: ${formatDay(lastBackupAt)}, ${formatClock(lastBackupAt)}` : 'No backup made from this phone yet.'}
           </p>
+          <p className="mb-3 text-[13px] text-label-2">Your data only lives on this phone. Export a backup regularly and keep it in Files or iCloud Drive.</p>
+          <div className="flex flex-col gap-2">
+            {prepared ? (
+              <Button onClick={() => void share(prepared)}>Save or share backup</Button>
+            ) : (
+              <Button onClick={() => void prepare()} disabled={busy}>
+                Export backup
+              </Button>
+            )}
+            <Button variant="secondary" disabled={busy} onClick={() => fileInput.current?.click()}>
+              Restore from backup…
+            </Button>
+          </div>
+          <input
+            ref={fileInput}
+            type="file"
+            accept="application/json,.json"
+            className="hidden"
+            onChange={(e) => {
+              void pick(e.target.files?.[0])
+              e.target.value = '' // allow picking the same file again
+            }}
+          />
+          {prepared && (
+            <p className="mt-2 text-[13px] text-label-2">
+              Ready: {countOf(prepared.counts.sessions, 'workout')}, {countOf(prepared.counts.sets, 'set')}, {countOf(prepared.counts.programs, 'program')}. Tap above, then “Save to Files”.
+            </p>
+          )}
         </li>
       </ListGroup>
-
-      <div className="mb-2 flex flex-col gap-3">
-        {prepared ? (
-          <Button onClick={() => void share(prepared)}>Save or share backup</Button>
-        ) : (
-          <Button onClick={() => void prepare()} disabled={busy}>
-            Export backup
-          </Button>
-        )}
-        <Button variant="secondary" disabled={busy} onClick={() => fileInput.current?.click()}>
-          Restore from backup…
-        </Button>
-        <input
-          ref={fileInput}
-          type="file"
-          accept="application/json,.json"
-          className="hidden"
-          onChange={(e) => {
-            void pick(e.target.files?.[0])
-            e.target.value = '' // allow picking the same file again
-          }}
-        />
-      </div>
-      {prepared && (
-        <p className="mb-2 px-1 text-[13px] text-label-2">
-          Ready: {countOf(prepared.counts.sessions, 'workout')}, {countOf(prepared.counts.sets, 'set')}, {countOf(prepared.counts.programs, 'program')}. Tap above, then “Save to Files”.
-        </p>
-      )}
       {message && <p className={`mb-4 px-1 text-[15px] ${message.error ? 'text-danger' : 'text-label-2'}`}>{message.text}</p>}
 
       {pending && (

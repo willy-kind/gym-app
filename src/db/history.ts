@@ -2,6 +2,7 @@ import { db } from './db'
 import { logSet } from './sessions'
 import type { Session } from './types'
 import { sessionStats, type SessionStats } from '../lib/history'
+import { findPRs } from '../lib/progression'
 
 type WithId<T> = T & { id: number }
 
@@ -11,10 +12,14 @@ export interface SessionSummary {
   title: string
   programName?: string
   stats: SessionStats
+  /** Sets in this workout that were personal records when logged. */
+  prCount: number
 }
 
 export interface HistoryList {
   active?: WithId<Session>
+  /** Day name of the session in progress, or "Workout". */
+  activeTitle?: string
   items: SessionSummary[]
   /** Finished sessions in total, to know if there are more to show. */
   total: number
@@ -29,20 +34,41 @@ export async function listHistory(limit: number): Promise<HistoryList> {
     db.programDays.toArray(),
     db.programs.toArray(),
   ])
-  const sets = await db.sets.where('sessionId').anyOf(finished.map((s) => s.id!)).toArray()
+  // Every set, because a PR is judged against all earlier sets of the exercise.
+  const allSets = await db.sets.toArray()
+  const listed = new Set(finished.map((s) => s.id!))
+  const sets = allSets.filter((s) => listed.has(s.sessionId))
   const dayById = new Map(days.map((d) => [d.id!, d]))
   const programById = new Map(programs.map((p) => [p.id!, p]))
+  const titleOf = (session: Session) => (session.programDayId === undefined ? undefined : dayById.get(session.programDayId)?.name) ?? 'Workout'
+
+  const prsBySession = new Map<number, number>()
+  const byExercise = new Map<number, typeof allSets>()
+  for (const s of allSets) {
+    const group = byExercise.get(s.exerciseId)
+    if (group) group.push(s)
+    else byExercise.set(s.exerciseId, [s])
+  }
+  const sessionOfSet = new Map(allSets.map((s) => [s.id!, s.sessionId]))
+  for (const group of byExercise.values()) {
+    for (const id of findPRs(group.map((s) => ({ ...s, id: s.id! })))) {
+      const sessionId = sessionOfSet.get(id)!
+      prsBySession.set(sessionId, (prsBySession.get(sessionId) ?? 0) + 1)
+    }
+  }
 
   return {
     active: active as WithId<Session> | undefined,
+    activeTitle: active ? titleOf(active) : undefined,
     total,
     items: finished.map((session) => {
       const day = session.programDayId === undefined ? undefined : dayById.get(session.programDayId)
       return {
         session: session as WithId<Session>,
-        title: day?.name ?? 'Workout',
+        title: titleOf(session),
         programName: day ? programById.get(day.programId)?.name : undefined,
         stats: sessionStats(sets.filter((s) => s.sessionId === session.id)),
+        prCount: prsBySession.get(session.id!) ?? 0,
       }
     }),
   }

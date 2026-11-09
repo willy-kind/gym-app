@@ -5,10 +5,13 @@ import { LinkRow, ListGroup } from '../../components/List'
 import { BottomAction } from '../../components/Button'
 import { NameSheet } from '../../components/Dialogs'
 import { createProgram, listPrograms } from '../../db/programs'
+import { listExercises } from '../../db/exercises'
+import { countOf } from '../../lib/format'
 import { useLiveQuery } from '../../db/useLiveQuery'
 
 export function ProgramsPage() {
   const programs = useLiveQuery(listPrograms, [])
+  const exercises = useLiveQuery(listExercises, [])
   const navigate = useNavigate()
   const [creating, setCreating] = useState(false)
 
@@ -26,7 +29,7 @@ export function ProgramsPage() {
         </ListGroup>
       )}
       <ListGroup>
-        <LinkRow to="/programs/exercises" title="Exercise library" />
+        <LinkRow to="/programs/exercises" title="Exercise library" subtitle={exercises ? countOf(exercises.length, 'exercise') : undefined} />
       </ListGroup>
       {archived.length > 0 && (
         <ListGroup header="Archived">

@@ -3,7 +3,7 @@ import { formatSetsSummary, formatSetWeight, type LoggedSet, type SessionExercis
 import { formatWeight } from '../../lib/format'
 import { useUnit } from '../settings/settingsStore'
 import type { Suggestion } from '../../lib/progression'
-import { PRBadge } from '../../components/PRBadge'
+import { SetPill } from './SetPill'
 
 /** One exercise in the session: target, last time, and the sets logged so far. Tap to make it the active one. */
 export function ExerciseCard({
@@ -73,18 +73,7 @@ export function ExerciseCard({
             const n = s.isWarmup ? 'W' : String(working)
             return (
               <li key={s.id}>
-                <button
-                  type="button"
-                  onClick={() => onEditSet(s)}
-                  aria-label={`Edit set ${n}: ${formatSetWeight(s.weight, bodyweight, unit)} × ${s.reps}${prSetIds.has(s.id) ? ', personal record' : ''}`}
-                  className="flex min-h-11 w-full items-center gap-2.5 rounded-lg bg-surface-2 px-3 text-left tabular-nums active:opacity-70"
-                >
-                  <span className="w-5 text-[14px] text-label-2">{n}</span>
-                  <span className="flex-1 text-[17px] font-semibold">
-                    {formatSetWeight(s.weight, bodyweight, unit)} × {s.reps}
-                  </span>
-                  {prSetIds.has(s.id) && <PRBadge />}
-                </button>
+                <SetPill set={s} label={n} bodyweight={bodyweight} unit={unit} pr={prSetIds.has(s.id)} onEdit={() => onEditSet(s)} />
               </li>
             )
           })}
