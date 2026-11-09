@@ -3,6 +3,9 @@ import { TabBar } from './components/TabBar'
 import { UpdateToast } from './components/UpdateToast'
 import { TrainPage } from './features/session/TrainPage'
 import { ProgramsPage } from './features/programs/ProgramsPage'
+import { ProgramPage } from './features/programs/ProgramPage'
+import { DayPage } from './features/programs/DayPage'
+import { ExercisesPage } from './features/programs/ExercisesPage'
 import { HistoryPage } from './features/history/HistoryPage'
 import { ProgressPage } from './features/progress/ProgressPage'
 
@@ -13,6 +16,9 @@ export function App() {
         <Routes>
           <Route path="/train" element={<TrainPage />} />
           <Route path="/programs" element={<ProgramsPage />} />
+          <Route path="/programs/exercises" element={<ExercisesPage />} />
+          <Route path="/programs/:programId" element={<ProgramPage />} />
+          <Route path="/programs/:programId/days/:dayId" element={<DayPage />} />
           <Route path="/history" element={<HistoryPage />} />
           <Route path="/progress" element={<ProgressPage />} />
           <Route path="*" element={<Navigate to="/train" replace />} />

@@ -1,44 +1,53 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useNavigate } from 'react-router'
 import { Page } from '../../components/Page'
-import { loadProgramOverview, type ProgramOverview } from '../../db/programs'
-import { formatWeight } from '../../lib/format'
+import { LinkRow, ListGroup } from '../../components/List'
+import { BottomAction } from '../../components/Button'
+import { NameSheet } from '../../components/Dialogs'
+import { createProgram, listPrograms } from '../../db/programs'
+import { useLiveQuery } from '../../db/useLiveQuery'
 
-/** Read-only view of the seeded programs. Editing arrives in feature 2. */
 export function ProgramsPage() {
-  const [programs, setPrograms] = useState<ProgramOverview[] | null>(null)
+  const programs = useLiveQuery(listPrograms, [])
+  const navigate = useNavigate()
+  const [creating, setCreating] = useState(false)
 
-  useEffect(() => {
-    let cancelled = false
-    void loadProgramOverview().then((p) => {
-      if (!cancelled) setPrograms(p)
-    })
-    return () => {
-      cancelled = true
-    }
-  }, [])
+  const active = programs?.filter((p) => !p.program.archived) ?? []
+  const archived = programs?.filter((p) => p.program.archived) ?? []
 
   return (
     <Page title="Programs">
-      {programs?.map((p) => (
-        <section key={p.id} className="mb-6">
-          <h2 className="mb-2 text-xl font-semibold">{p.name}</h2>
-          {p.days.map((d) => (
-            <div key={d.id} className="mb-4">
-              <h3 className="mb-1 px-4 text-[13px] text-label-2 uppercase">{d.name}</h3>
-              <ul className="divide-y divide-separator overflow-hidden rounded-xl bg-surface">
-                {d.exercises.map((e) => (
-                  <li key={e.id} className="flex min-h-11 items-center justify-between gap-3 px-4 py-2.5">
-                    <span>{e.name}</span>
-                    <span className="shrink-0 text-label-2 tabular-nums">
-                      {e.targetSets} × {e.targetReps} · {formatWeight(e.targetWeight ?? 0)}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+      {programs && active.length === 0 && <p className="mb-6 px-1 text-label-2">No programs yet. Create one below.</p>}
+      {active.length > 0 && (
+        <ListGroup>
+          {active.map(({ program, dayNames }) => (
+            <LinkRow key={program.id} to={`/programs/${program.id}`} title={program.name} subtitle={dayNames.join(' · ') || 'No days'} />
           ))}
-        </section>
-      ))}
+        </ListGroup>
+      )}
+      <ListGroup>
+        <LinkRow to="/programs/exercises" title="Exercise library" />
+      </ListGroup>
+      {archived.length > 0 && (
+        <ListGroup header="Archived">
+          {archived.map(({ program, dayNames }) => (
+            <LinkRow key={program.id} to={`/programs/${program.id}`} title={program.name} subtitle={dayNames.join(' · ') || 'No days'} />
+          ))}
+        </ListGroup>
+      )}
+      <BottomAction onClick={() => setCreating(true)}>New program</BottomAction>
+      {creating && (
+        <NameSheet
+          title="New program"
+          placeholder="e.g. Push Pull Legs"
+          saveLabel="Create"
+          onClose={() => setCreating(false)}
+          onSave={async (name) => {
+            const id = await createProgram(name)
+            void navigate(`/programs/${id}`)
+          }}
+        />
+      )}
     </Page>
   )
 }
