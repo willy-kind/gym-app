@@ -84,7 +84,7 @@ export default function ExerciseProgressPage() {
         {showTable ? 'Hide table' : 'Show as table'}
       </button>
       {showTable && (
-        <div className="mb-6 overflow-x-auto rounded-xl bg-surface">
+        <div className="card-edge mb-6 overflow-x-auto rounded-xl bg-surface">
           <table className="w-full text-left text-[15px] tabular-nums">
             <thead className="text-[13px] text-label-2">
               <tr>

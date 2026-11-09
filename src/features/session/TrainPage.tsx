@@ -71,7 +71,7 @@ export function TrainPage() {
   return (
     <Page title="Train" action={settingsLink}>
       {reminder && (
-        <Link to="/settings" className="mb-4 flex items-center gap-3 rounded-xl bg-surface px-4 py-3">
+        <Link to="/settings" className="card-edge mb-4 flex items-center gap-3 rounded-xl bg-surface px-4 py-3">
           <span className="min-w-0 flex-1">
             <span className="block font-semibold">Time for a backup</span>
             <span className="block text-[15px] text-label-2">
@@ -90,7 +90,7 @@ export function TrainPage() {
                 key={day.id}
                 title={day.name}
                 subtitle={`${exerciseCount} ${exerciseCount === 1 ? 'exercise' : 'exercises'}${last ? ` · Last: ${formatDay(last)}` : ''}`}
-                detail={next?.id === day.id ? <span className="rounded-full bg-accent px-2.5 py-1 text-[13px] font-semibold text-white">Next</span> : undefined}
+                detail={next?.id === day.id ? <span className="rounded-full bg-accent px-2.5 py-1 text-[13px] font-semibold text-on-accent">Next</span> : undefined}
                 onClick={() => void start(day.id)}
               />
             )

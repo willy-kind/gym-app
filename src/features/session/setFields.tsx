@@ -26,13 +26,13 @@ export function RepsInput({ text, onText }: { text: string; onText: (t: string) 
   return <StepperInput label="Reps" text={text} onText={onText} parse={parseReps} format={String} step={1} min={1} max={MAX_REPS} inputMode="numeric" />
 }
 
-export function WarmupToggle({ on, onToggle }: { on: boolean; onToggle: () => void }) {
+export function WarmupToggle({ on, onToggle, className = 'min-h-11' }: { on: boolean; onToggle: () => void; className?: string }) {
   return (
     <button
       type="button"
       aria-pressed={on}
       onClick={onToggle}
-      className={`min-h-11 shrink-0 rounded-full px-4 text-[15px] font-medium ${on ? 'bg-accent text-white' : 'bg-surface-2 text-label-2'}`}
+      className={`${className} shrink-0 rounded-full px-[18px] text-[15px] font-semibold ${on ? 'bg-accent text-on-accent' : 'bg-surface-2 text-label-2'}`}
     >
       Warm-up
     </button>

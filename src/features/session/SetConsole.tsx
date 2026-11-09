@@ -6,6 +6,7 @@ import { unlockAudio } from './sound'
 import { prefillSet, type SessionExercise, type SetValues } from '../../lib/session'
 import { RepsInput, WarmupToggle, WeightInput } from './setFields'
 import { PanelRestTimer } from './RestTimerBar'
+import { useRestTimer } from './restTimerStore'
 
 /**
  * The set entry panel, pinned to the bottom of the screen for the active exercise,
@@ -30,6 +31,8 @@ export function SetConsole({
   const working = exercise.sets.filter((s) => !s.isWarmup)
   const prefill = prefillSet({ previous, current: working, targetWeight: exercise.plan?.targetWeight, targetReps: exercise.plan?.targetReps, suggestedWeight })
   const { unit, timerSound } = useSettings()
+  const timer = useRestTimer()
+  const resting = timer !== null && timer.sessionId === sessionId
   const [wText, setWText] = useState(weightInputText(toDisplay(prefill.weight, unit)))
   const [rText, setRText] = useState(String(prefill.reps))
   const [warmup, setWarmup] = useState(false)
@@ -60,27 +63,30 @@ export function SetConsole({
   }
 
   return (
-    <div className="sticky bottom-0 z-10 -mx-4 rounded-t-2xl border-t border-separator bg-surface px-4 pt-3 pb-3 shadow-[0_-8px_24px_rgba(0,0,0,0.35)]">
-      <PanelRestTimer sessionId={sessionId} />
-      <div className="mb-2 flex items-center justify-between gap-3">
-        <div className="min-w-0">
+    <div className="sticky bottom-0 z-10 -mx-4 rounded-t-2xl bg-surface px-4 pt-4 pb-3 shadow-[0_-6px_24px_rgba(0,0,0,0.18)]">
+      {/* While resting, the timer row names what's next and stands in for the title row. */}
+      <PanelRestTimer sessionId={sessionId} next={timer?.exerciseName === exercise.name ? label : `${exercise.name} · ${label}`} />
+      {!resting && (
+        <div className="mb-2.5 min-w-0">
           <p className="truncate text-[15px] font-semibold">{exercise.name}</p>
           <p className="text-[13px] text-label-2">{label}</p>
         </div>
-        <WarmupToggle on={warmup} onToggle={() => setWarmup(!warmup)} />
-      </div>
-      <div className="mb-3 flex items-start justify-between gap-2">
+      )}
+      <div className="mb-3 grid grid-cols-2 gap-2.5">
         <WeightInput text={wText} onText={setWText} bodyweight={bodyweight} unit={unit} />
         <RepsInput text={rText} onText={setRText} />
       </div>
-      <button
-        type="button"
-        disabled={weight === null || reps === null || saving}
-        onClick={() => void submit()}
-        className="flex min-h-14 w-full items-center justify-center rounded-xl bg-accent text-[19px] font-semibold text-white active:opacity-70 disabled:opacity-40"
-      >
-        Log set
-      </button>
+      <div className="flex gap-2.5">
+        <WarmupToggle on={warmup} onToggle={() => setWarmup(!warmup)} className="min-h-14" />
+        <button
+          type="button"
+          disabled={weight === null || reps === null || saving}
+          onClick={() => void submit()}
+          className="flex min-h-14 flex-1 items-center justify-center rounded-full bg-accent text-[19px] font-semibold text-on-accent active:opacity-70 disabled:opacity-40"
+        >
+          Log set
+        </button>
+      </div>
     </div>
   )
 }

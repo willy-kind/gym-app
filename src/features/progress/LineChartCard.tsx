@@ -34,7 +34,7 @@ export function LineChartCard({
   const c = useThemeColors()
 
   return (
-    <section className="mb-4 rounded-xl bg-surface px-3 pt-3 pb-2">
+    <section className="card-edge mb-4 rounded-xl bg-surface px-3 pt-3 pb-2">
       <h2 className="px-1 text-[17px] font-semibold">{title}</h2>
       {summary && <p className="mb-1 px-1 text-[13px] text-label-2">{summary}</p>}
       {points.length === 0 ? (

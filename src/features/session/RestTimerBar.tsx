@@ -18,17 +18,17 @@ export function RestTimerBar() {
   return <RestTimerView timer={timer} placement="bar" />
 }
 
-/** The rest timer as the top strip of the set panel, for the workout it belongs to. */
-export function PanelRestTimer({ sessionId }: { sessionId: number }) {
+/** The rest timer at the top of the set panel (a progress ring), for the workout it belongs to. */
+export function PanelRestTimer({ sessionId, next }: { sessionId: number; next: string }) {
   const timer = useRestTimer()
   if (!timer || timer.sessionId !== sessionId) return null
-  return <RestTimerView timer={timer} placement="panel" />
+  return <RestTimerView timer={timer} placement="panel" next={next} />
 }
 
 // Shared by both placements so moving between screens never beeps twice for one rest.
 let beepedFor: number | null = null
 
-function RestTimerView({ timer, placement }: { timer: RestTimer; placement: 'bar' | 'panel' }) {
+function RestTimerView({ timer, placement, next = '' }: { timer: RestTimer; placement: 'bar' | 'panel'; next?: string }) {
   // Ticks only while a timer is shown. Every value is recomputed from the stored end time.
   const now = useNow(250)
   const navigate = useNavigate()
@@ -48,42 +48,28 @@ function RestTimerView({ timer, placement }: { timer: RestTimer; placement: 'bar
     }
   }, [done, over, timer.endsAt])
 
-  const inPanel = placement === 'panel'
-  const readout = (
-    <>
-      <span className={`max-w-full truncate text-[12px] ${done ? 'font-semibold' : 'text-label-2'}`}>
-        {done ? (inPanel ? 'Rest over' : 'Rest over — next set') : `Rest · ${timer.exerciseName}`}
-      </span>
-      <span className="text-[26px] leading-none font-bold tabular-nums">{done ? `+${formatRest(over)}` : formatRest(remainingSeconds(timer, now))}</span>
-    </>
-  )
-  const middle = 'flex min-h-14 min-w-0 flex-1 flex-col items-center justify-center'
+  if (placement === 'panel') return <PanelRing timer={timer} now={now} done={done} over={over} next={next} />
 
   return (
     <div
       role="timer"
       aria-live="off"
-      className={`relative flex items-center gap-1 overflow-hidden px-1 transition-colors ${
-        inPanel ? '-mx-4 -mt-3 mb-3 rounded-t-2xl border-b border-separator' : 'border-t border-separator'
-      } ${done ? 'bg-success text-black' : inPanel ? 'bg-surface-2/60' : 'bg-surface'}`}
-      style={inPanel ? undefined : { paddingLeft: 'max(0.25rem, env(safe-area-inset-left))', paddingRight: 'max(0.25rem, env(safe-area-inset-right))' }}
+      className={`relative flex items-center gap-1 overflow-hidden border-t border-separator px-1 transition-colors ${done ? 'bg-success text-on-success' : 'bg-surface'}`}
+      style={{ paddingLeft: 'max(0.25rem, env(safe-area-inset-left))', paddingRight: 'max(0.25rem, env(safe-area-inset-right))' }}
     >
       {!done && <div className="absolute inset-x-0 top-0 h-0.5 origin-left bg-accent" style={{ transform: `scaleX(${progress(timer, now)})` }} />}
       <BarButton label={`Remove ${REST_ADJUST_SECONDS} seconds`} disabled={done} onClick={() => adjustRest(-REST_ADJUST_SECONDS)} done={done}>
         −{REST_ADJUST_SECONDS}s
       </BarButton>
-      {inPanel ? (
-        <div className={middle}>{readout}</div>
-      ) : (
-        <button
-          type="button"
-          onClick={() => void navigate(`/train/session/${timer.sessionId}`)}
-          className={middle}
-          aria-label={done ? 'Rest over, go to workout' : 'Go to workout'}
-        >
-          {readout}
-        </button>
-      )}
+      <button
+        type="button"
+        onClick={() => void navigate(`/train/session/${timer.sessionId}`)}
+        className="flex min-h-14 min-w-0 flex-1 flex-col items-center justify-center"
+        aria-label={done ? 'Rest over, go to workout' : 'Go to workout'}
+      >
+        <span className={`max-w-full truncate text-[12px] ${done ? 'font-semibold' : 'text-label-2'}`}>{done ? 'Rest over — next set' : `Rest · ${timer.exerciseName}`}</span>
+        <span className="text-[26px] leading-none font-bold tabular-nums">{done ? `+${formatRest(over)}` : formatRest(remainingSeconds(timer, now))}</span>
+      </button>
       <BarButton label={`Add ${REST_ADJUST_SECONDS} seconds`} onClick={() => adjustRest(REST_ADJUST_SECONDS)} done={done}>
         +{REST_ADJUST_SECONDS}s
       </BarButton>
@@ -91,6 +77,68 @@ function RestTimerView({ timer, placement }: { timer: RestTimer; placement: 'bar
         {done ? 'OK' : 'Skip'}
       </BarButton>
     </div>
+  )
+}
+
+const RING_R = 28
+const RING_C = 2 * Math.PI * RING_R
+
+/**
+ * The rest timer at the top of the set panel: a progress ring with the time, what's
+ * next (the panel's set), and pill buttons. It replaces the panel's own title row.
+ */
+function PanelRing({ timer, now, done, over, next }: { timer: RestTimer; now: number; done: boolean; over: number; next: string }) {
+  const left = done ? 1 : progress(timer, now)
+  return (
+    <div role="timer" aria-live="off" className="mb-3 flex items-center gap-3">
+      <div className="relative h-16 w-16 shrink-0">
+        <svg viewBox="0 0 64 64" width="64" height="64" aria-hidden="true">
+          <circle cx="32" cy="32" r={RING_R} fill="none" strokeWidth="6" style={{ stroke: 'var(--separator)' }} />
+          <circle
+            cx="32"
+            cy="32"
+            r={RING_R}
+            fill="none"
+            style={{ stroke: done ? 'var(--success)' : 'var(--accent)' }}
+            strokeWidth="6"
+            strokeLinecap="round"
+            strokeDasharray={`${left * RING_C} ${RING_C}`}
+            transform="rotate(-90 32 32)"
+          />
+        </svg>
+        <span className="absolute inset-0 flex items-center justify-center text-[17px] font-bold tabular-nums">
+          {done ? `+${formatRest(over)}` : formatRest(remainingSeconds(timer, now))}
+        </span>
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className={`truncate text-[13px] ${done ? 'font-semibold text-success' : 'text-label-2'}`}>{done ? 'Rest over · next' : 'Resting · then'}</p>
+        <p className="truncate text-[15px] font-semibold">{next}</p>
+      </div>
+      {!done && (
+        <PillButton label={`Remove ${REST_ADJUST_SECONDS} seconds`} onClick={() => adjustRest(-REST_ADJUST_SECONDS)}>
+          −{REST_ADJUST_SECONDS}
+        </PillButton>
+      )}
+      <PillButton label={`Add ${REST_ADJUST_SECONDS} seconds`} onClick={() => adjustRest(REST_ADJUST_SECONDS)}>
+        +{REST_ADJUST_SECONDS}
+      </PillButton>
+      <PillButton label={done ? 'Dismiss' : 'Skip rest'} onClick={clearRest}>
+        {done ? 'OK' : 'Skip'}
+      </PillButton>
+    </div>
+  )
+}
+
+function PillButton({ label, onClick, children }: { label: string; onClick: () => void; children: ReactNode }) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      onClick={onClick}
+      className="min-h-11 min-w-11 shrink-0 rounded-full bg-surface-2 px-3 text-[15px] font-semibold tabular-nums active:opacity-60"
+    >
+      {children}
+    </button>
   )
 }
 
@@ -115,7 +163,7 @@ function BarButton({
       aria-label={label}
       onClick={onClick}
       disabled={disabled}
-      className={`min-h-12 min-w-14 rounded-lg px-2 text-[16px] tabular-nums active:opacity-60 disabled:opacity-30 ${bold ? 'font-semibold' : 'font-medium'} ${done ? 'text-black' : 'text-accent'}`}
+      className={`min-h-12 min-w-14 rounded-lg px-2 text-[16px] tabular-nums active:opacity-60 disabled:opacity-30 ${bold ? 'font-semibold' : 'font-medium'} ${done ? 'text-on-success' : 'text-accent'}`}
     >
       {children}
     </button>

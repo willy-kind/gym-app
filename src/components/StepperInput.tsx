@@ -17,7 +17,10 @@ export interface StepperInputProps {
   stepFrom?: (value: number, direction: 1 | -1) => number
 }
 
-/** −/+ buttons around a typed number, for weight and reps. Invalid text is shown in red. */
+/**
+ * A typed number with −/+ buttons, for weight and reps, in a recessed well:
+ * label (and unit) on top, the big value between the buttons. Invalid text is red.
+ */
 export function StepperInput({ label, text, onText, parse, format, step, min, max, inputMode, placeholder, unit, stepFrom }: StepperInputProps) {
   const id = useId()
   const value = parse(text)
@@ -27,28 +30,26 @@ export function StepperInput({ label, text, onText, parse, format, step, min, ma
     onText(format(Math.min(max, Math.max(min, next))))
   }
   return (
-    <div className="flex flex-col items-center gap-1">
-      <label htmlFor={id} className="text-[13px] text-label-2">
+    <div className="min-w-0 rounded-lg bg-bg px-2.5 pt-2 pb-2.5">
+      <label htmlFor={id} className="mb-1 block px-0.5 text-[12px] text-label-2">
         {label}
+        {unit && ` · ${unit}`}
       </label>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center justify-between gap-1">
         <StepButton label={`Decrease ${label}`} disabled={value !== null && value <= min} onClick={() => nudge(-1)}>
           −
         </StepButton>
-        <div className="relative">
-          <input
-            id={id}
-            inputMode={inputMode}
-            enterKeyHint="done"
-            autoComplete="off"
-            placeholder={placeholder}
-            value={text}
-            onChange={(e) => onText(e.target.value)}
-            onFocus={(e) => e.target.select()}
-            className={`h-12 w-[4.5rem] rounded-lg bg-surface-2 text-center text-[22px] font-semibold tabular-nums outline-none ${unit ? 'pr-5' : ''} ${value === null ? 'text-danger' : ''}`}
-          />
-          {unit && <span className="pointer-events-none absolute top-1/2 right-1.5 -translate-y-1/2 text-[11px] text-label-2">{unit}</span>}
-        </div>
+        <input
+          id={id}
+          inputMode={inputMode}
+          enterKeyHint="done"
+          autoComplete="off"
+          placeholder={placeholder}
+          value={text}
+          onChange={(e) => onText(e.target.value)}
+          onFocus={(e) => e.target.select()}
+          className={`h-11 w-full min-w-0 rounded-md bg-transparent text-center text-[28px] font-bold tabular-nums outline-none placeholder:text-label-2 focus:bg-surface-2 ${value === null ? 'text-danger' : ''}`}
+        />
         <StepButton label={`Increase ${label}`} disabled={value !== null && value >= max} onClick={() => nudge(1)}>
           +
         </StepButton>

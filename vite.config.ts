@@ -32,7 +32,7 @@ function seedFromPrograms(): Plugin {
   }
 }
 
-const THEME = '#000000'
+const THEME = '#121519'
 
 export default defineConfig({
   // GitHub Pages serves the site at /<repo>/

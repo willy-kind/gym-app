@@ -6,7 +6,7 @@ export function ListGroup({ header, footer, children }: { header?: ReactNode; fo
   return (
     <section className="mb-6">
       {header && <h2 className="mb-1.5 px-4 text-[13px] text-label-2 uppercase">{header}</h2>}
-      <ul className="divide-y divide-separator overflow-hidden rounded-xl bg-surface">{children}</ul>
+      <ul className="card-edge divide-y divide-separator overflow-hidden rounded-xl bg-surface">{children}</ul>
       {footer && <p className="mt-1.5 px-4 text-[13px] text-label-2">{footer}</p>}
     </section>
   )
@@ -70,8 +70,8 @@ export function EditRow({
   return (
     <li className="flex min-h-12 items-center">
       <button type="button" aria-label="Delete" onClick={onDelete} className="flex h-12 w-12 shrink-0 items-center justify-center">
-        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-danger text-white">
-          <span className="block h-0.5 w-3 rounded bg-white" />
+        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-danger text-on-danger">
+          <span className="block h-0.5 w-3 rounded bg-on-danger" />
         </span>
       </button>
       <button type="button" onClick={onTap} disabled={!onTap} className="flex min-h-12 min-w-0 flex-1 items-center py-2.5 text-left">

@@ -33,16 +33,16 @@ const tabs = [
 export function TabBar() {
   return (
     <nav
-      className="border-t border-separator bg-bar backdrop-blur-xl"
-      style={{ paddingBottom: 'env(safe-area-inset-bottom)', paddingLeft: 'env(safe-area-inset-left)', paddingRight: 'env(safe-area-inset-right)' }}
+      className="border-t border-separator bg-bar"
+      style={{ paddingBottom: 'env(safe-area-inset-bottom)', paddingLeft: 'max(12px, env(safe-area-inset-left))', paddingRight: 'max(12px, env(safe-area-inset-right))' }}
     >
-      <ul className="flex">
+      <ul className="flex gap-1 pt-1.5 pb-1">
         {tabs.map((t) => (
           <li key={t.to} className="flex-1">
             <NavLink
               to={t.to}
               className={({ isActive }) =>
-                `flex min-h-14 flex-col items-center justify-center gap-0.5 pt-1.5 pb-1 text-[11px] font-medium ${isActive ? 'text-accent' : 'text-label-2'}`
+                `flex min-h-14 flex-col items-center justify-center gap-0.5 rounded-[14px] py-1 text-[11px] font-semibold ${isActive ? 'bg-surface-2 text-accent' : 'text-label-2'}`
               }
             >
               {t.icon}

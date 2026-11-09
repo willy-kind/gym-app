@@ -37,7 +37,7 @@ export function StepButton({ label, onClick, disabled, children }: { label: stri
       aria-label={label}
       onClick={onClick}
       disabled={disabled}
-      className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-2 text-[26px] leading-none text-accent active:opacity-60 disabled:opacity-30"
+      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-surface-2 text-[24px] leading-none text-label active:opacity-60 disabled:opacity-30"
     >
       {children}
     </button>

@@ -1,32 +1,42 @@
 @import 'tailwindcss';
 
-/* iOS system colors. Dark is the default look; light only when the phone asks for it. */
+/* Mist: cool blue-grey. Dark is the default look; light only when the phone asks for it.
+   on-* colors are the text on a filled accent/danger/success background. */
 :root {
-  --bg: #000000;
-  --surface: #1c1c1e;
-  --surface-2: #2c2c2e;
-  --separator: #38383a;
-  --label: #ffffff;
-  --label-2: #ebebf599;
-  --accent: #0a84ff;
-  --danger: #ff453a;
-  --success: #30d158;
-  --bar: #121212f0;
+  --bg: #121519;
+  --surface: #1b2027;
+  --surface-2: #252c35;
+  --separator: #2f3843;
+  --label: #e4e9ef;
+  --label-2: #98a3b1;
+  --accent: #8ab4e8;
+  --on-accent: #0d1520;
+  --danger: #f28b82;
+  --on-danger: #1f0d0b;
+  --success: #8fd0ae;
+  --on-success: #0d1520;
+  --bar: #161a1f;
+  /* Outline that separates cards from the background (only needed in light). */
+  --card-edge: transparent;
   color-scheme: dark;
 }
 
 @media (prefers-color-scheme: light) {
   :root {
-    --bg: #f2f2f7;
+    --bg: #f2f4f7;
     --surface: #ffffff;
-    --surface-2: #e5e5ea;
-    --separator: #c6c6c8;
-    --label: #000000;
-    --label-2: #3c3c4399;
-    --accent: #007aff;
-    --danger: #ff3b30;
-    --success: #34c759;
-    --bar: #f9f9f9f0;
+    --surface-2: #e6eaf0;
+    --separator: #dde2e9;
+    --label: #1a2029;
+    --label-2: #56606e;
+    --accent: #2f5e9e;
+    --on-accent: #ffffff;
+    --danger: #b3261e;
+    --on-danger: #ffffff;
+    --success: #2e7d5b;
+    --on-success: #ffffff;
+    --bar: #f8f9fb;
+    --card-edge: #dde2e9;
     color-scheme: light;
   }
 }
@@ -39,10 +49,18 @@
   --color-label: var(--label);
   --color-label-2: var(--label-2);
   --color-accent: var(--accent);
+  --color-on-accent: var(--on-accent);
   --color-danger: var(--danger);
+  --color-on-danger: var(--on-danger);
   --color-success: var(--success);
+  --color-on-success: var(--on-success);
   --color-bar: var(--bar);
   --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+}
+
+/* Thin outline around cards so white cards stand off the light background. */
+@utility card-edge {
+  box-shadow: inset 0 0 0 1px var(--card-edge);
 }
 
 html,

@@ -41,7 +41,7 @@ export function SetSheet({
 
   return (
     <Sheet title={title} onClose={onClose}>
-      <div className="mb-4 flex items-start justify-between gap-2">
+      <div className="mb-4 grid grid-cols-2 gap-2.5">
         <WeightInput text={wText} onText={setWText} bodyweight={bodyweight} unit={unit} />
         <RepsInput text={rText} onText={setRText} />
       </div>

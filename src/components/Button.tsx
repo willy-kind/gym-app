@@ -3,7 +3,7 @@ import type { ButtonHTMLAttributes } from 'react'
 type Variant = 'primary' | 'secondary' | 'danger'
 
 const variants: Record<Variant, string> = {
-  primary: 'bg-accent text-white font-semibold',
+  primary: 'bg-accent text-on-accent font-semibold',
   secondary: 'bg-surface-2 text-accent font-semibold',
   danger: 'bg-surface-2 text-danger font-semibold',
 }
@@ -12,7 +12,7 @@ export function Button({ variant = 'primary', className = '', ...props }: Button
   return (
     <button
       type="button"
-      className={`flex min-h-12 w-full items-center justify-center rounded-xl px-4 text-[17px] active:opacity-70 disabled:opacity-40 ${variants[variant]} ${className}`}
+      className={`flex min-h-12 w-full items-center justify-center rounded-full px-4 text-[17px] active:opacity-70 disabled:opacity-40 ${variants[variant]} ${className}`}
       {...props}
     />
   )

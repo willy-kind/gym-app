@@ -18,6 +18,7 @@ Tick each box. If something fails, note the step number and what you saw.
 
 ## 1. Install & app shell
 
+- [ ] 1.0 **Mist look:** dark blue-grey by default with a soft blue accent; with the phone in Light mode, light grey with a deeper blue. Buttons are rounded pills, the current tab has a soft highlight, and blue buttons have readable (dark in dark mode, white in light mode) text.
 - [ ] 1.1 Open the URL in **Safari** → Share → **Add to Home Screen**. The name is "Gym" and the icon is a blue dumbbell on black.
 - [ ] 1.2 Open it from the Home Screen: full screen, no Safari address bar or toolbar.
 - [ ] 1.3 The clock/battery area doesn't cover any text; the tab bar sits above the home indicator.
@@ -58,7 +59,7 @@ Tick each box. If something fails, note the step number and what you saw.
 - [ ] 4.2 **Start Upper A**: title "Upper A", subtitle "Upper/Lower · Started 18:05 · 0 min"; Bench Press card is highlighted; the set panel is pinned at the bottom.
 - [ ] 4.3 First time ever: card says "First time"; the panel is prefilled from the program (75 kg × 6).
 - [ ] 4.4 Use −/+ on weight (2.5 kg steps) and reps, and type values directly (weight shows decimal keypad, reps shows number pad).
-- [ ] 4.5 **Log set**: the set appears in the card as "1  75 kg × 6"; the panel moves to "Set 2 of 4".
+- [ ] 4.5 **Log set**: the set appears in the card as a rounded row "1  75 kg × 6", the card's counter goes to **1/4**, and the panel moves to "Set 2 of 4".
 - [ ] 4.6 Double-tap **Log set** quickly: only one set is logged.
 - [ ] 4.7 Log all 4 Bench sets: the card gets a ✓ and the panel jumps to **Incline Bench Press**, scrolling it into view.
 - [ ] 4.8 Tap a different card: it becomes the active one in the panel.
@@ -81,12 +82,12 @@ Tick each box. If something fails, note the step number and what you saw.
 
 ## 5. Rest timer
 
-- [ ] 5.1 Log a Bench set: the timer appears across the top of the set panel at **3:00** and counts down; a thin line shrinks. There is no separate timer bar above the tab bar on the workout screen.
+- [ ] 5.1 Log a Bench set: a round timer appears at the top of the set panel at **3:00**, its ring emptying as it counts down, with "Resting · then Set 2 of 4" beside it (the panel's own title row hides while resting). There is no separate timer bar above the tab bar on the workout screen.
 - [ ] 5.2 **−15s** / **+15s** change the time; −15s never goes below 0:00.
 - [ ] 5.3 Lock the phone for ~60 s, unlock: the time has dropped by ~60 s (not paused).
 - [ ] 5.4 Switch to another app for ~30 s and back: correct time.
 - [ ] 5.5 Force-quit and reopen during a rest: the timer is still running with the right time.
-- [ ] 5.6 Let it run out: the timer strip turns **green**, says "Rest over" and counts **+0:01, +0:02…**. **OK** dismisses it.
+- [ ] 5.6 Let it run out: the ring turns **green**, says "Rest over · next" and counts **+0:01, +0:02…**; −15 disappears. **OK** dismisses it.
 - [ ] 5.7 Logging the next set restarts the countdown with that exercise's rest.
 - [ ] 5.8 During a rest switch to Programs: the timer moves to a bar above the tab bar; tapping the time returns to the workout, where it is back in the set panel.
 - [ ] 5.9 **Skip** hides the timer. Finishing or discarding the workout also clears it.

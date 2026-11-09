@@ -33,10 +33,15 @@ export function ExerciseCard({
   const last = formatSetsSummary(previous, bodyweight, unit)
   let working = 0
 
+  const counter = plan ? `${exercise.workingSets}/${plan.targetSets}` : null
+
   return (
-    // Scroll margin keeps the card clear of the sticky set console when scrolled into view.
-    <section ref={ref} className={`mb-3 scroll-mt-16 scroll-mb-64 overflow-hidden rounded-xl bg-surface ${active ? 'ring-2 ring-accent' : ''}`}>
-      <button type="button" onClick={onActivate} className="flex min-h-12 w-full items-start gap-3 px-4 pt-3 pb-2 text-left">
+    // Scroll margin keeps the card clear of the sticky set panel when scrolled into view.
+    <section
+      ref={ref}
+      className={`mb-3 scroll-mt-16 scroll-mb-80 rounded-xl bg-surface p-4 ${active ? 'shadow-[inset_0_0_0_1.5px_var(--accent)]' : 'card-edge'}`}
+    >
+      <button type="button" onClick={onActivate} className="flex min-h-11 w-full items-start gap-3 text-left">
         <span className="min-w-0 flex-1">
           <span className="block text-[17px] font-semibold break-words">{exercise.name}</span>
           {plan && (
@@ -44,34 +49,41 @@ export function ExerciseCard({
               {plan.targetSets} × {plan.targetReps} · {formatWeight(plan.targetWeight ?? 0, unit)}
             </span>
           )}
-          <span className="block text-[15px] text-label-2 tabular-nums">{last ? `Last time: ${last}` : 'First time'}</span>
+          <span className="block text-[13px] text-label-2 tabular-nums">{last ? `Last time: ${last}` : 'First time'}</span>
           {suggestion && exercise.workingSets === 0 && (
-            <span className="block text-[15px] font-medium text-accent tabular-nums">
+            <span className="mt-0.5 block text-[15px] font-medium text-accent tabular-nums">
               Go up: {formatSetWeight(suggestion.weight, bodyweight, unit)} · hit {suggestion.reps} on all {suggestion.sets} sets
             </span>
           )}
         </span>
-        {done && (
-          <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-white" aria-label="Done">
+        {done ? (
+          <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-on-accent" aria-label="Done">
             <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
               <path d="m3 8.5 3.2 3L13 4.5" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </span>
+        ) : (
+          counter && <span className="shrink-0 text-[15px] font-semibold text-label-2 tabular-nums">{counter}</span>
         )}
       </button>
       {sets.length > 0 && (
-        <ul className="divide-y divide-separator border-t border-separator">
+        <ul className="mt-3 flex flex-col gap-1.5">
           {sets.map((s) => {
             if (!s.isWarmup) working++
+            const n = s.isWarmup ? 'W' : String(working)
             return (
               <li key={s.id}>
-                <button type="button" onClick={() => onEditSet(s)} className="flex min-h-11 w-full items-center gap-3 px-4 text-left tabular-nums active:bg-surface-2">
-                  <span className={`w-7 text-[15px] font-semibold ${s.isWarmup ? 'text-label-2' : 'text-accent'}`}>{s.isWarmup ? 'W' : working}</span>
-                  <span className="flex-1 text-[17px]">
+                <button
+                  type="button"
+                  onClick={() => onEditSet(s)}
+                  aria-label={`Edit set ${n}: ${formatSetWeight(s.weight, bodyweight, unit)} × ${s.reps}${prSetIds.has(s.id) ? ', personal record' : ''}`}
+                  className="flex min-h-11 w-full items-center gap-2.5 rounded-lg bg-surface-2 px-3 text-left tabular-nums active:opacity-70"
+                >
+                  <span className="w-5 text-[14px] text-label-2">{n}</span>
+                  <span className="flex-1 text-[17px] font-semibold">
                     {formatSetWeight(s.weight, bodyweight, unit)} × {s.reps}
                   </span>
                   {prSetIds.has(s.id) && <PRBadge />}
-                  <span className="text-[13px] text-label-2">Edit</span>
                 </button>
               </li>
             )

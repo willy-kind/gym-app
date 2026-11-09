@@ -84,7 +84,7 @@ function SessionScreen({ sessionId }: { sessionId: number }) {
     .join(' · ')
 
   return (
-    <Page title={view.day?.name ?? 'Workout'} action={<NavButton bold onClick={() => setDialog({ kind: 'finish' })}>Finish</NavButton>}>
+    <Page title={view.day?.name ?? 'Workout'} action={<NavButton pill onClick={() => setDialog({ kind: 'finish' })}>Finish</NavButton>}>
       <p className="-mt-3 mb-4 text-[15px] text-label-2 tabular-nums">{subtitle}</p>
 
       {exercises.length === 0 && <p className="mb-6 px-1 text-label-2">No exercises yet. Add one below.</p>}

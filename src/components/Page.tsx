@@ -44,11 +44,18 @@ export function Page({ title, back, action, children }: PageProps) {
 }
 
 export function Placeholder({ children }: { children: ReactNode }) {
-  return <p className="rounded-xl bg-surface p-4 text-label-2">{children}</p>
+  return <p className="card-edge rounded-xl bg-surface p-4 text-label-2">{children}</p>
 }
 
 /** Text button for the nav bar (Edit, Done, …). */
-export function NavButton({ onClick, children, bold }: { onClick: () => void; children: ReactNode; bold?: boolean }) {
+export function NavButton({ onClick, children, bold, pill }: { onClick: () => void; children: ReactNode; bold?: boolean; pill?: boolean }) {
+  if (pill) {
+    return (
+      <button type="button" onClick={onClick} className="mr-2 min-h-11 min-w-11 rounded-full bg-surface-2 px-[18px] text-[15px] font-semibold text-accent active:opacity-70">
+        {children}
+      </button>
+    )
+  }
   return (
     <button type="button" onClick={onClick} className={`min-h-11 min-w-11 px-3 text-[17px] text-accent ${bold ? 'font-semibold' : ''}`}>
       {children}
