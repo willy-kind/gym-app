@@ -71,6 +71,8 @@ Tick each box. If something fails, note the step number and what you saw.
 - [ ] 4.16 **Finish** (top right or bottom): summary shows sets, exercises, duration, and lists exercises with fewer sets than planned. Confirm → back to Train; Upper A shows "Last: Today" and **Next** moves to Lower A.
 - [ ] 4.17 Start Upper A again: every card shows "Last time: 75 kg × 6, 6, …" and the panel prefills from last time's matching set.
 - [ ] 4.18 Change the weight on set 1 (e.g. 77.5): set 2 prefills with 77.5, not last time's weight.
+- [ ] 4.18b **Progression hint:** finish a workout where every planned Bench set hits the top of the range (4 × 7 at 75 kg). Next Upper A: the Bench card says "Go up: 77.5 kg · hit 7 on all 4 sets" and the panel prefills 77.5. The hint disappears after the first set; if you log set 1 at 75 instead, set 2 goes back to 75. No hint when a set fell short, or for pure bodyweight exercises.
+- [ ] 4.18c **PR badge:** a set heavier than ever, or with a higher estimated 1RM than ever (e.g. 77.5 × 6 after 75 × 7), shows a blue **PR** pill in the card and later in History. Repeating it, warm-ups and your very first sets of an exercise don't get one.
 - [ ] 4.19 **Discard workout** → confirm → gone (not in History).
 - [ ] 4.20 Finish with no sets logged: you're offered **Discard** instead.
 - [ ] 4.21 **Empty workout**: starts with no exercises; add exercises as you go.

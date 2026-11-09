@@ -147,3 +147,17 @@ describe('lb display', () => {
     expect(formatSetsSummary([{ weight: 60, reps: 8 }, { weight: 60, reps: 7 }], false, 'lb')).toBe('132.3 lb × 8, 7')
   })
 })
+
+describe('prefillSet with a progression suggestion', () => {
+  const previous = [
+    { weight: 75, reps: 7 },
+    { weight: 75, reps: 7 },
+  ]
+  it('uses the suggested weight for the first set and carries it on', () => {
+    expect(prefillSet({ previous, current: [], suggestedWeight: 77.5 })).toEqual({ weight: 77.5, reps: 7 })
+    expect(prefillSet({ previous, current: [{ weight: 77.5, reps: 6 }], suggestedWeight: 77.5 })).toEqual({ weight: 77.5, reps: 7 })
+  })
+  it('goes back to last time once you log at the old weight', () => {
+    expect(prefillSet({ previous, current: [{ weight: 75, reps: 7 }], suggestedWeight: 77.5 })).toEqual({ weight: 75, reps: 7 })
+  })
+})

@@ -2,6 +2,8 @@ import type { Ref } from 'react'
 import { formatSetsSummary, formatSetWeight, type LoggedSet, type SessionExercise, type SetValues } from '../../lib/session'
 import { formatWeight } from '../../lib/format'
 import { useUnit } from '../settings/settingsStore'
+import type { Suggestion } from '../../lib/progression'
+import { PRBadge } from '../../components/PRBadge'
 
 /** One exercise in the session: target, last time, and the sets logged so far. Tap to make it the active one. */
 export function ExerciseCard({
@@ -10,6 +12,8 @@ export function ExerciseCard({
   active,
   previous,
   bodyweight,
+  suggestion,
+  prSetIds,
   onActivate,
   onEditSet,
 }: {
@@ -18,6 +22,9 @@ export function ExerciseCard({
   active: boolean
   previous: readonly SetValues[]
   bodyweight: boolean
+  /** Progression step to show until the first working set is logged. */
+  suggestion: Suggestion | null
+  prSetIds: ReadonlySet<number>
   onActivate: () => void
   onEditSet: (set: LoggedSet) => void
 }) {
@@ -38,6 +45,11 @@ export function ExerciseCard({
             </span>
           )}
           <span className="block text-[15px] text-label-2 tabular-nums">{last ? `Last time: ${last}` : 'First time'}</span>
+          {suggestion && exercise.workingSets === 0 && (
+            <span className="block text-[15px] font-medium text-accent tabular-nums">
+              Go up: {formatSetWeight(suggestion.weight, bodyweight, unit)} · hit {suggestion.reps} on all {suggestion.sets} sets
+            </span>
+          )}
         </span>
         {done && (
           <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-white" aria-label="Done">
@@ -58,6 +70,7 @@ export function ExerciseCard({
                   <span className="flex-1 text-[17px]">
                     {formatSetWeight(s.weight, bodyweight, unit)} × {s.reps}
                   </span>
+                  {prSetIds.has(s.id) && <PRBadge />}
                   <span className="text-[13px] text-label-2">Edit</span>
                 </button>
               </li>

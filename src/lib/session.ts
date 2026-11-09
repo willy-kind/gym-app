@@ -91,12 +91,15 @@ export function nextIncomplete(exercises: readonly SessionExercise[], from = 0):
  * - Reps follow the same set from last session (or its last set), else this session's last set, else the target.
  * - Weight follows last session's matching set, unless you've already changed the load this session,
  *   in which case it keeps the weight you used on your last set.
+ * - `suggestedWeight` (a progression step) replaces last session's weight for the first set; once you
+ *   log a set at it, the rule above carries it to the next sets.
  */
 export function prefillSet(input: {
   previous: readonly SetValues[]
   current: readonly SetValues[]
   targetWeight?: number
   targetReps?: string
+  suggestedWeight?: number
 }): SetValues {
   const { previous, current } = input
   const index = current.length
@@ -105,7 +108,8 @@ export function prefillSet(input: {
   const lastPlannedLike = previous[index - 1]
   const changedLoad = last !== undefined && (lastPlannedLike === undefined || last.weight !== lastPlannedLike.weight)
 
-  const weight = changedLoad ? last.weight : (prev?.weight ?? last?.weight ?? input.targetWeight ?? 0)
+  const fromPrevious = index === 0 && input.suggestedWeight !== undefined ? input.suggestedWeight : prev?.weight
+  const weight = changedLoad ? last.weight : (fromPrevious ?? last?.weight ?? input.targetWeight ?? 0)
   const targetMin = parseRepTarget(input.targetReps ?? '')?.min ?? parseRepTarget(DEFAULT_TARGET_REPS)!.min
   const reps = prev?.reps ?? last?.reps ?? targetMin
   return { weight, reps }

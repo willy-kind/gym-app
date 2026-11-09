@@ -160,3 +160,24 @@ describe('session view', () => {
     expect(await getSessionView(999)).toBeNull()
   })
 })
+
+describe('personal records in the session view', () => {
+  it('flags sets that beat every earlier set of the exercise', async () => {
+    const upperA = await dayId('Upper A')
+    const bench = await exerciseId('Bench Press (Barbell)')
+    const first = await startSession(upperA, 100)
+    await logSet({ sessionId: first, exerciseId: bench, weight: 75, reps: 6, isWarmup: false }, 110)
+    await finishSession(first, 120)
+
+    const s = await startSession(upperA, 200)
+    const same = await logSet({ sessionId: s, exerciseId: bench, weight: 75, reps: 6, isWarmup: false }, 210)
+    const pr = await logSet({ sessionId: s, exerciseId: bench, weight: 77.5, reps: 6, isWarmup: false }, 220)
+    const warm = await logSet({ sessionId: s, exerciseId: bench, weight: 100, reps: 1, isWarmup: true }, 230)
+    const view = await getSessionView(s)
+    expect([...view!.prSetIds]).toEqual([pr])
+    expect(view!.prSetIds.has(same)).toBe(false)
+    expect(view!.prSetIds.has(warm)).toBe(false)
+    // The earlier session's only set was the baseline.
+    expect((await getSessionView(first))!.prSetIds.size).toBe(0)
+  })
+})

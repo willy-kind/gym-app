@@ -17,16 +17,18 @@ export function SetConsole({
   exercise,
   previous,
   bodyweight,
+  suggestedWeight,
   onLog,
 }: {
   sessionId: number
   exercise: SessionExercise
   previous: readonly SetValues[]
   bodyweight: boolean
+  suggestedWeight?: number
   onLog: (values: { weight: number; reps: number; isWarmup: boolean }) => Promise<void>
 }) {
   const working = exercise.sets.filter((s) => !s.isWarmup)
-  const prefill = prefillSet({ previous, current: working, targetWeight: exercise.plan?.targetWeight, targetReps: exercise.plan?.targetReps })
+  const prefill = prefillSet({ previous, current: working, targetWeight: exercise.plan?.targetWeight, targetReps: exercise.plan?.targetReps, suggestedWeight })
   const { unit, timerSound } = useSettings()
   const [wText, setWText] = useState(weightInputText(toDisplay(prefill.weight, unit)))
   const [rText, setRText] = useState(String(prefill.reps))

@@ -16,6 +16,7 @@ import { ExercisePickerSheet } from '../programs/ExercisePickerSheet'
 import { SetSheet, type SetValuesInput } from '../session/SetSheet'
 import { NotesSheet, TimesSheet } from './EditSheets'
 import { useUnit } from '../settings/settingsStore'
+import { PRBadge } from '../../components/PRBadge'
 
 type Dialog =
   | { kind: 'edit'; set: LoggedSet; bodyweight: boolean }
@@ -87,11 +88,12 @@ export function SessionDetailPage() {
                 <ButtonRow
                   key={s.id}
                   title={
-                    <span className="flex gap-3 tabular-nums">
+                    <span className="flex items-center gap-3 tabular-nums">
                       <span className={`w-7 font-semibold ${s.isWarmup ? 'text-label-2' : 'text-accent'}`}>{s.isWarmup ? 'W' : working}</span>
                       <span>
                         {formatSetWeight(s.weight, bw, unit)} × {s.reps}
                       </span>
+                      {view.prSetIds.has(s.id) && <PRBadge />}
                     </span>
                   }
                   onClick={() => setDialog({ kind: 'edit', set: s, bodyweight: bw })}

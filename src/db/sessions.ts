@@ -2,6 +2,7 @@ import Dexie from 'dexie'
 import { db } from './db'
 import type { Exercise, Program, ProgramDay, Session, WorkoutSet } from './types'
 import type { LoggedSet, PlanEntry, SetValues } from '../lib/session'
+import { findPRs } from '../lib/progression'
 
 type WithId<T> = T & { id: number }
 
@@ -117,6 +118,8 @@ export interface SessionView {
   sets: LoggedSet[]
   exercises: Map<number, WithId<Exercise>>
   previous: Map<number, PreviousPerformance>
+  /** Ids of this session's sets that were personal records when logged. */
+  prSetIds: Set<number>
 }
 
 /**
@@ -144,6 +147,16 @@ export async function getSessionView(sessionId: number, extraExerciseIds: readon
     }),
   )
 
+  // PRs are judged against every set of the exercise ever logged, in time order.
+  const prSetIds = new Set<number>()
+  const loggedHere = new Set(sets.map((s) => s.id))
+  await Promise.all(
+    [...new Set(sets.map((s) => s.exerciseId))].map(async (exerciseId) => {
+      const all = await db.sets.where('[exerciseId+completedAt]').between([exerciseId, Dexie.minKey], [exerciseId, Dexie.maxKey]).toArray()
+      for (const id of findPRs(all.map(toLogged))) if (loggedHere.has(id)) prSetIds.add(id)
+    }),
+  )
+
   const plan: PlanEntry[] = items.map((i) => ({
     exerciseId: i.exerciseId,
     name: exercises.get(i.exerciseId)?.name ?? 'Unknown exercise',
@@ -161,5 +174,6 @@ export async function getSessionView(sessionId: number, extraExerciseIds: readon
     sets,
     exercises,
     previous,
+    prSetIds,
   }
 }

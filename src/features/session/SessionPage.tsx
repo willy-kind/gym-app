@@ -13,7 +13,8 @@ import { buildSessionExercises, isBodyweightExercise, nextIncomplete, type Logge
 import { ExercisePickerSheet } from '../programs/ExercisePickerSheet'
 import { clearAdhoc, loadAdhoc, saveAdhoc } from './adhoc'
 import { clearRest, startRest } from './restTimerStore'
-import { getSettings } from '../settings/settingsStore'
+import { getSettings, useUnit } from '../settings/settingsStore'
+import { suggestNextWeight } from '../../lib/progression'
 import { ExerciseCard } from './ExerciseCard'
 import { SetConsole } from './SetConsole'
 import { SetSheet } from './SetSheet'
@@ -32,6 +33,7 @@ function SessionScreen({ sessionId }: { sessionId: number }) {
   const [activeId, setActiveId] = useState<number | null>(null)
   const [dialog, setDialog] = useState<Dialog | null>(null)
   const now = useNow(30_000)
+  const unit = useUnit()
   const cards = useRef(new Map<number, HTMLElement>())
   const close = () => setDialog(null)
 
@@ -48,6 +50,7 @@ function SessionScreen({ sessionId }: { sessionId: number }) {
   const active = exercises.find((e) => e.exerciseId === activeId) ?? exercises[nextIncomplete(exercises)] ?? exercises[0]
   const previousOf = (e: SessionExercise) => view.previous.get(e.exerciseId)?.sets ?? []
   const bodyweightOf = (e: SessionExercise) => isBodyweightExercise(e.plan?.targetWeight, e.plan !== undefined, previousOf(e))
+  const suggestionOf = (e: SessionExercise) => suggestNextWeight(previousOf(e), e.plan, unit)
   const workingSets = view.sets.filter((s) => !s.isWarmup).length
 
   const focus = (exerciseId: number) => {
@@ -96,6 +99,8 @@ function SessionScreen({ sessionId }: { sessionId: number }) {
           active={e === active}
           previous={previousOf(e)}
           bodyweight={bodyweightOf(e)}
+          suggestion={suggestionOf(e)}
+          prSetIds={view.prSetIds}
           onActivate={() => setActiveId(e.exerciseId)}
           onEditSet={(set) => setDialog({ kind: 'edit', set, bodyweight: bodyweightOf(e) })}
         />
@@ -118,6 +123,7 @@ function SessionScreen({ sessionId }: { sessionId: number }) {
           exercise={active}
           previous={previousOf(active)}
           bodyweight={bodyweightOf(active)}
+          suggestedWeight={suggestionOf(active)?.weight}
           onLog={(values) => log(active, values)}
         />
       )}
