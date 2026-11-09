@@ -17,6 +17,7 @@ import { SetSheet, type SetValuesInput } from '../session/SetSheet'
 import { NotesSheet, TimesSheet } from './EditSheets'
 import { useUnit } from '../settings/settingsStore'
 import { SetPill } from '../session/SetPill'
+import { ShareWorkoutButton } from '../import-export/ShareWithAI'
 
 type Dialog =
   | { kind: 'edit'; set: LoggedSet; bodyweight: boolean }
@@ -128,6 +129,7 @@ export function SessionDetailPage() {
       })}
 
       <div className="mb-4 flex flex-col gap-3">
+        <ShareWorkoutButton sessionId={session.id} />
         <Button variant="secondary" onClick={() => setDialog({ kind: 'pick' })}>
           Add exercise
         </Button>

@@ -103,6 +103,8 @@ Tick each box. If something fails, note the step number and what you saw.
 - [ ] 6.6 Set finish before start → error, nothing saved.
 - [ ] 6.7 Add notes → reopen → edit them.
 - [ ] 6.8 **Delete workout** → confirm → removed; "Last time" falls back to the previous workout.
+- [ ] 6.9 **Share with AI** (one workout): open a workout → **Share with AI** → the iOS share sheet opens. Pick **Copy**, paste in an AI chat: a short question asking for feedback, then the workout with each exercise's target, warm-ups (W), numbered sets with rest times ("rest 2:45"), PRs, best e1RM and last time. Or pick your AI app directly.
+- [ ] 6.10 **Share recent workouts**: History → **Share with AI…** → choose **Last 4 / Last 8 / 4 weeks**: the count, date range and a preview update. **Share…** opens the share sheet; the text lists the program targets once, then the workouts oldest first. Cancelling the share sheet changes nothing.
 
 ## 7. Progress charts
 

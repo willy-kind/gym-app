@@ -8,11 +8,13 @@ import { listHistory } from '../../db/history'
 import { useLiveQuery } from '../../db/useLiveQuery'
 import { formatClock, formatDay, formatDuration } from '../../lib/date'
 import { groupByMonth } from '../../lib/history'
+import { ShareRecentSheet } from '../import-export/ShareWithAI'
 
 const PAGE_SIZE = 30
 
 export function HistoryPage() {
   const [limit, setLimit] = useState(PAGE_SIZE)
+  const [sharing, setSharing] = useState(false)
   const data = useLiveQuery(() => listHistory(limit), [limit])
   const now = useNow(60_000)
 
@@ -38,6 +40,12 @@ export function HistoryPage() {
           </svg>
         </Link>
       )}
+      {data.items.length > 0 && (
+        <Button variant="secondary" className="mb-6" onClick={() => setSharing(true)}>
+          Share with AI…
+        </Button>
+      )}
+      {sharing && <ShareRecentSheet onClose={() => setSharing(false)} />}
       {data.items.length === 0 && <p className="mb-6 px-1 text-label-2">No finished workouts yet. They’ll appear here after you tap Finish.</p>}
       {groups.map((g) => (
         <ListGroup key={g.key} header={g.label}>
