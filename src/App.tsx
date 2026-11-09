@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router'
 import { TabBar } from './components/TabBar'
 import { UpdateToast } from './components/UpdateToast'
+import { DebugOverlay } from './components/DebugOverlay'
 import { RestTimerBar } from './features/session/RestTimerBar'
 import { TrainPage } from './features/session/TrainPage'
 import { SessionPage } from './features/session/SessionPage'
@@ -21,7 +22,8 @@ export function App() {
   return (
     // Pinned to the screen edges rather than sized with 100dvh: in iOS standalone mode
     // dvh can come out a status-bar height short, leaving a band under the tab bar.
-    <div className="fixed inset-0 flex flex-col">
+    // bg-bg: the shell paints the app background itself, so any red showing is page background outside it.
+    <div className="fixed inset-0 flex flex-col bg-bg">
       <main className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
         <Routes>
           <Route path="/train" element={<TrainPage />} />
@@ -48,6 +50,7 @@ export function App() {
       <UpdateToast />
       <RestTimerBar />
       <TabBar />
+      <DebugOverlay />
     </div>
   )
 }

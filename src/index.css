@@ -73,6 +73,13 @@ body {
   -webkit-touch-callout: none;
 }
 
+/* TEMPORARY (debug): red page background. Red anywhere on screen is page
+   background not covered by the app shell; black is outside the web view. */
+html,
+body {
+  background: red !important;
+}
+
 /* No grey flash or focus ring after a tap; keyboard focus still gets the ring. */
 a,
 button {
