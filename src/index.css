@@ -51,6 +51,23 @@ body,
   height: 100%;
 }
 
+/* Installed app on iOS (26+, still in 27): 100%, 100dvh and innerHeight come out
+   the top safe-area inset short of the screen (793 of 852pt on iPhone 16), leaving
+   a band under the tab bar. Only 100lvh is the full screen height there. Scoped to
+   standalone so Safari tabs keep the normal dynamic height. */
+.app-height {
+  height: 100dvh;
+}
+
+@media (display-mode: standalone) {
+  html,
+  body,
+  #root,
+  .app-height {
+    height: 100lvh;
+  }
+}
+
 /* The document never scrolls; only <main> and sheet bodies do. Otherwise iOS can
    pan the whole page for the keyboard and leave it scrolled after it closes. */
 html,

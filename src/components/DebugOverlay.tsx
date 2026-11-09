@@ -59,7 +59,7 @@ function measure(): string[] {
     `safe-area top: ${insets.top}px  bottom: ${insets.bottom}px`,
     `100vh: ${unitHeight('100vh')}  100svh: ${unitHeight('100svh')}`,
     `100lvh: ${unitHeight('100lvh')}  100dvh: ${unitHeight('100dvh')}`,
-    `--app-height: ${getComputedStyle(document.documentElement).getPropertyValue('--app-height') || 'unset'}`,
+    `html: ${getComputedStyle(document.documentElement).height}  body: ${getComputedStyle(document.body).height}  #root: ${document.getElementById('root') ? getComputedStyle(document.getElementById('root')!).height : 'n/a'}`,
     `scrollY: ${window.scrollY}  sw: ${navigator.serviceWorker?.controller ? 'controlling' : 'none'}`,
     `gear <a>: ${styleSummary(gear, ['filter', 'box-shadow', 'text-shadow', 'outline-style', 'outline-color', 'transition-property', '-webkit-tap-highlight-color', 'color'])}`,
     `gear <svg>: ${styleSummary(gear?.querySelector('svg') ?? null, ['filter', 'stroke', 'stroke-width', 'width', 'height'])}`,

@@ -1,4 +1,4 @@
-import { computeAppHeight, keepsKeyboardOpen } from '../lib/viewport'
+import { keepsKeyboardOpen } from '../lib/viewport'
 
 // iOS WebKit sometimes keeps a stale viewport after the keyboard closes (bottom
 // bars float up, leaving a gap) or after launch/resume (safe-area insets read as
@@ -24,21 +24,6 @@ export function safeAreaInsets(): { top: number; bottom: number } {
   return result
 }
 
-/**
- * Sets --app-height on <html> for the shell and sheets. iOS standalone can report
- * a viewport one status-bar height short of the screen; see computeAppHeight.
- */
-export function updateAppHeight() {
-  const height = computeAppHeight({
-    standalone: window.matchMedia('(display-mode: standalone)').matches,
-    portrait: window.matchMedia('(orientation: portrait)').matches,
-    screenHeight: screen.height,
-    innerHeight: window.innerHeight,
-    safeAreaTop: safeAreaInsets().top,
-  })
-  document.documentElement.style.setProperty('--app-height', `${height}px`)
-}
-
 export function remeasureViewport() {
   const root = document.getElementById('root')
   if (!root) return
@@ -51,14 +36,9 @@ export function remeasureViewport() {
   void root.offsetHeight
   root.style.display = display
   for (const [el, top] of saved) el.scrollTop = top
-  updateAppHeight()
 }
 
 export function installViewportFix() {
-  updateAppHeight()
-  window.addEventListener('resize', updateAppHeight)
-  window.addEventListener('orientationchange', updateAppHeight)
-  window.visualViewport?.addEventListener('resize', updateAppHeight)
   let timer: ReturnType<typeof setTimeout> | undefined
   document.addEventListener(
     'focusout',
