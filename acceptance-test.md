@@ -1,0 +1,148 @@
+# Acceptance test — Gym PWA
+
+Manual checks to run on the iPhone before relying on the app in the gym.
+Automated tests (`npm test`, 160 tests) cover the logic and the database; this
+list covers what only a real phone can show: install, offline, iOS behaviour,
+layout, and the feel of using it one-handed.
+
+Tick each box. If something fails, note the step number and what you saw.
+
+**App:** https://willy-kind.github.io/gym-app/
+
+---
+
+## 0. Before you start
+
+- [ ] 0.1 Delete any old "Gym" icon from the Home Screen (long-press → Remove App → Delete). This starts from an empty database, so the starter program loads fresh.
+- [ ] 0.2 Phone is on Wi-Fi or mobile data for the install steps.
+
+## 1. Install & app shell
+
+- [ ] 1.1 Open the URL in **Safari** → Share → **Add to Home Screen**. The name is "Gym" and the icon is a blue dumbbell on black.
+- [ ] 1.2 Open it from the Home Screen: full screen, no Safari address bar or toolbar.
+- [ ] 1.3 The clock/battery area doesn't cover any text; the tab bar sits above the home indicator.
+- [ ] 1.4 Four tabs work: **Train / Programs / History / Progress**. Train is selected on launch.
+- [ ] 1.5 After a few seconds a "Ready to work offline" banner appears once; **OK** dismisses it.
+- [ ] 1.6 Dark mode is the default look. Switch the phone to Light mode (Settings → Display): the app follows. Check the status bar clock is still readable in light mode (known risk).
+- [ ] 1.7 Rotate the phone: nothing breaks (portrait is the intended layout).
+- [ ] 1.8 Pinch-zoom and double-tap don't zoom inputs; tapping any text box doesn't zoom the page.
+
+## 2. Offline & data safety
+
+- [ ] 2.1 Turn on **Airplane Mode**, force-quit the app (swipe it away), reopen it: it loads, all tabs work.
+- [ ] 2.2 Still offline: open a Progress chart you have never opened before — it loads.
+- [ ] 2.3 Still offline: start a workout, log a set, finish it. Turn Airplane Mode off: everything is still there.
+- [ ] 2.4 Settings (gear on Train) → bottom of the page says **Storage: persistent**. If it says "not marked persistent yet", note it and check again after a few days of use.
+
+## 3. Programs (starter program and editing)
+
+- [ ] 3.1 Programs → **Upper/Lower** → four days: Upper A, Lower A, Upper B, Lower B.
+- [ ] 3.2 Open Upper A: 8 exercises, e.g. "Bench Press (Barbell) — 4 × 6-7 · 75 kg · 3:00 rest", "Pull Up — 6 × 3-4 · BW · 2:00 rest". Spot-check a few against `programs.md` (61.25 kg calf press shows correctly).
+- [ ] 3.3 Tap an exercise → change sets, rep range, weight and rest → **Save**: the summary line updates.
+- [ ] 3.4 Clear the weight box → Save: shows **BW**.
+- [ ] 3.5 Type a weight with a comma (e.g. `22,5`): accepted as 22.5.
+- [ ] 3.6 Day screen → **Edit** → move an exercise up/down; leave and come back: order kept. Remove one (confirm sheet appears).
+- [ ] 3.7 Program screen → **Edit** → reorder days, rename a day (tap it), delete a day (confirm).
+- [ ] 3.8 **Add exercise** → search "pull" → pick **Pull Up** on Lower A: its targets copy from Upper A (6 × 3-4, BW, 2:00).
+- [ ] 3.9 **Add exercise** → type a new name → **Create "…"** → the target editor opens straight away.
+- [ ] 3.10 When typing in any sheet, the sheet stays above the keyboard and the Save button is reachable.
+- [ ] 3.11 **New program** → name it → add a day → add an exercise. Then **Archive** it: it moves to the Archived section and isn't offered on Train. **Unarchive**, then **Delete program** (confirm).
+- [ ] 3.12 Programs → **Exercise library**: search works; rename an exercise → the new name shows on every day using it. An exercise used anywhere has no Delete button; a fresh unused one can be deleted.
+
+## 4. Logging a workout
+
+- [ ] 4.1 Train shows each day with "N exercises", a **Next** badge, and a **Start …** button at the bottom.
+- [ ] 4.2 **Start Upper A**: title "Upper A", subtitle "Upper/Lower · Started 18:05 · 0 min"; Bench Press card is highlighted; the set panel is pinned at the bottom.
+- [ ] 4.3 First time ever: card says "First time"; the panel is prefilled from the program (75 kg × 6).
+- [ ] 4.4 Use −/+ on weight (2.5 kg steps) and reps, and type values directly (weight shows decimal keypad, reps shows number pad).
+- [ ] 4.5 **Log set**: the set appears in the card as "1  75 kg × 6"; the panel moves to "Set 2 of 4".
+- [ ] 4.6 Double-tap **Log set** quickly: only one set is logged.
+- [ ] 4.7 Log all 4 Bench sets: the card gets a ✓ and the panel jumps to **Incline Bench Press**, scrolling it into view.
+- [ ] 4.8 Tap a different card: it becomes the active one in the panel.
+- [ ] 4.9 **Pull Up**: weight box is empty with "BW" placeholder and labelled "Extra weight". Log one at BW and one with 5 kg: shown as "BW" and "BW + 5 kg".
+- [ ] 4.10 Turn on **Warm-up**, log a set: shown as "W", doesn't count toward "Set x of y".
+- [ ] 4.11 Tap a logged set → change reps → Save. Tap another → **Delete set** → "Tap again to delete" → gone.
+- [ ] 4.12 **Add exercise** mid-workout → pick one → it appears at the end and becomes active; log a set on it.
+- [ ] 4.13 With the keyboard open on the weight or reps box, the panel and Log set button remain usable.
+- [ ] 4.14 **Never lose a set:** log a set, then force-quit the app. Reopen: you land straight back in the workout with every set present.
+- [ ] 4.15 Lock the phone for a minute mid-workout, unlock: still in the workout, nothing lost.
+- [ ] 4.16 **Finish** (top right or bottom): summary shows sets, exercises, duration, and lists exercises with fewer sets than planned. Confirm → back to Train; Upper A shows "Last: Today" and **Next** moves to Lower A.
+- [ ] 4.17 Start Upper A again: every card shows "Last time: 75 kg × 6, 6, …" and the panel prefills from last time's matching set.
+- [ ] 4.18 Change the weight on set 1 (e.g. 77.5): set 2 prefills with 77.5, not last time's weight.
+- [ ] 4.19 **Discard workout** → confirm → gone (not in History).
+- [ ] 4.20 Finish with no sets logged: you're offered **Discard** instead.
+- [ ] 4.21 **Empty workout**: starts with no exercises; add exercises as you go.
+
+## 5. Rest timer
+
+- [ ] 5.1 Log a Bench set: a timer bar appears above the tab bar at **3:00** and counts down; a thin line shrinks.
+- [ ] 5.2 **−15s** / **+15s** change the time; −15s never goes below 0:00.
+- [ ] 5.3 Lock the phone for ~60 s, unlock: the time has dropped by ~60 s (not paused).
+- [ ] 5.4 Switch to another app for ~30 s and back: correct time.
+- [ ] 5.5 Force-quit and reopen during a rest: the timer is still running with the right time.
+- [ ] 5.6 Let it run out: the bar turns **green**, says "Rest over — next set" and counts **+0:01, +0:02…**. **OK** dismisses it.
+- [ ] 5.7 Logging the next set restarts the countdown with that exercise's rest.
+- [ ] 5.8 During a rest switch to Programs: the bar stays; tapping the time returns to the workout.
+- [ ] 5.9 **Skip** hides the bar. Finishing or discarding the workout also clears it.
+- [ ] 5.10 With the set panel, timer bar and tab bar all showing, the workout is still comfortable to use on your phone's screen.
+
+## 6. History
+
+- [ ] 6.1 History lists finished workouts newest first under a month heading, e.g. "Upper A — Today · 52 min · 24 sets".
+- [ ] 6.2 A workout in progress shows at the top as **Workout in progress** and opens it.
+- [ ] 6.3 Open a workout: date/times row, notes row, summary (sets · exercises · volume), and each exercise's sets in the order done.
+- [ ] 6.4 Edit a set, delete a set, **Add set** (prefilled from the last set), **Add exercise** + save a set.
+- [ ] 6.5 Tap the date row → **Edit times**: the iOS date/time pickers open. Move the start to yesterday → Save: the row says "Yesterday". Starting that day again shows those sets as "Last time".
+- [ ] 6.6 Set finish before start → error, nothing saved.
+- [ ] 6.7 Add notes → reopen → edit them.
+- [ ] 6.8 **Delete workout** → confirm → removed; "Last time" falls back to the previous workout.
+
+## 7. Progress charts
+
+Have at least 3 finished workouts with different weights first (History → Edit times helps spread the dates).
+
+- [ ] 7.1 Progress lists trained exercises, most recent first, with last date, session count and best e1RM.
+- [ ] 7.2 Open **Bench Press**: three charts — **Top set**, **Estimated 1RM**, **Volume** — each a blue line with dots and the latest value labelled at the right end. Nothing clipped at the edges; date labels don't overlap.
+- [ ] 7.3 Touch and drag across a chart: a vertical line and a tooltip follow your finger ("85 kg × 6", date).
+- [ ] 7.4 **3M / 6M / 1Y / All** change all three charts and their "Best … · +x in this period" lines together.
+- [ ] 7.5 **Show as table** lists the same values, newest first.
+- [ ] 7.6 Spot-check e1RM: 80 kg × 6 → 96 kg (Epley: 80 × (1 + 6/30)).
+- [ ] 7.7 A bodyweight-only exercise (e.g. Hanging Leg Raise) shows **Most reps in a set** and **Total reps** instead.
+- [ ] 7.8 Switch Light/Dark with a chart open: colours follow.
+
+## 8. Backup & restore
+
+- [ ] 8.1 Train shows a **Time for a backup** banner (once you have a finished workout and no recent backup). Tapping it opens Settings.
+- [ ] 8.2 Settings → **Export backup** → **Save or share backup** → share sheet opens → **Save to Files** → saved as `gym-backup-YYYY-MM-DD.json`.
+- [ ] 8.3 Settings now shows "Last backup: Today, HH:MM"; the Train banner is gone.
+- [ ] 8.4 Cancelling the share sheet does **not** update "Last backup".
+- [ ] 8.5 Make a change (e.g. log a workout or rename a program).
+- [ ] 8.6 **Restore from backup…** → pick the file → a sheet shows the backup date and counts, and warns that everything will be replaced (and mentions the workout in progress if there is one). Cancel: nothing changes.
+- [ ] 8.7 Restore again and tap **Replace all data**: "Restored N workouts…"; the change from 8.5 is gone and everything else matches the backup (programs, history, charts).
+- [ ] 8.8 Pick a file that isn't a backup (any other file from Files): a clear error, nothing changes.
+- [ ] 8.9 **Real disaster test:** export a backup, delete the app from the Home Screen, reinstall it from Safari (starter program only), restore the backup: all workouts and programs are back.
+
+## 9. Settings
+
+- [ ] 9.1 **Units → lb**: every weight is shown in lb — program targets, set panel (steps of 5 lb, unit label "lb"), logged sets, "Last time", History, Progress charts/table and volume.
+- [ ] 9.2 In lb, log a set of 135 lb, switch back to **kg**: it shows 61.24 kg. Switch to lb again: 135 lb (no drift).
+- [ ] 9.3 **Default rest** −/+ (15 s steps). Start an empty workout, add an exercise, log a set: the timer uses the default. Adding a brand-new exercise to a program day starts with this rest.
+- [ ] 9.4 **Sound when rest is over** → turn on: you hear a short beep preview (ring/silent switch on ring). Log a set with a short rest and keep the app open: it beeps once when the rest ends. With the app in the background: no beep (expected).
+
+## 10. Updates
+
+- [ ] 10.1 After a new deploy, close and reopen the app (sometimes twice): the new version loads, and all data is still there.
+
+---
+
+## Known limitations (expected, not bugs)
+
+- **No rest-over alert while the app is in the background or the phone is locked.** iOS web apps can't schedule local notifications without a push server; the timer is correct when you come back.
+- **No vibration** on iOS for web apps. The rest-over signal is the green bar, plus the optional beep.
+- **The beep** is muted by the ring/silent switch and only plays while the app is open.
+- **Status bar text is always white** (chosen for the dark look); in Light mode it may be hard to read.
+- **Exercises added mid-workout** are kept on the phone (not in the database) until their first set is logged; if the app is killed before that, add them again. No logged set is ever affected.
+- **Settings and the last-backup date are per phone** and not included in backups.
+- **Estimated 1RM uses Epley exactly**, so a single (1 rep) at 100 kg reads as 103.3 kg.
+- **Volume** counts bodyweight sets as 0 kg (extra load only).
+- **Data lives only on this phone.** Back up regularly; deleting the Home Screen app deletes its data.
