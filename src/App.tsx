@@ -20,10 +20,10 @@ const ExerciseProgressPage = lazy(() => import('./features/progress/ExerciseProg
 
 export function App() {
   return (
-    // Pinned to the screen edges rather than sized with 100dvh: in iOS standalone mode
-    // dvh can come out a status-bar height short, leaving a band under the tab bar.
+    // Height from --app-height (see components/viewportFix.ts): in iOS standalone mode
+    // every viewport unit can come out a status-bar height short of the screen.
     // bg-bg: the shell paints the app background itself, so any red showing is page background outside it.
-    <div className="fixed inset-0 flex flex-col bg-bg">
+    <div className="fixed inset-x-0 top-0 flex h-[var(--app-height,100dvh)] flex-col bg-bg">
       <main className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
         <Routes>
           <Route path="/train" element={<TrainPage />} />

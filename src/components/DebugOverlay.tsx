@@ -1,6 +1,7 @@
 // TEMPORARY: layout diagnostics for the iPhone. Remove once the bottom band and
 // gear glow are understood. Toggle: tap the "Train" title 3 times quickly.
 import { useEffect, useState } from 'react'
+import { safeAreaInsets } from './viewportFix'
 
 const KEY = 'gym.debug'
 const TAPS = 3
@@ -23,16 +24,14 @@ function saveEnabled(on: boolean) {
   }
 }
 
-/** Reads env(safe-area-inset-*) by applying them as padding to a hidden element. */
-function safeAreaInsets(): { top: string; bottom: string } {
+/** Computed px height of a hidden element sized with a viewport unit, e.g. '100dvh'. */
+function unitHeight(value: string): string {
   const probe = document.createElement('div')
-  probe.style.cssText =
-    'position:fixed;visibility:hidden;pointer-events:none;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)'
+  probe.style.cssText = `position:fixed;top:0;visibility:hidden;pointer-events:none;height:${value}`
   document.body.appendChild(probe)
-  const cs = getComputedStyle(probe)
-  const result = { top: cs.paddingTop, bottom: cs.paddingBottom }
+  const h = getComputedStyle(probe).height
   probe.remove()
-  return result
+  return h
 }
 
 function styleSummary(el: Element | null, props: string[]): string {
@@ -57,7 +56,10 @@ function measure(): string[] {
     `screen.height: ${screen.height}  screen.width: ${screen.width}`,
     `shell height: ${shell ? getComputedStyle(shell).height : 'n/a'}`,
     `tab bar bottom: ${px(tabBar?.getBoundingClientRect().bottom)}`,
-    `safe-area top: ${insets.top}  bottom: ${insets.bottom}`,
+    `safe-area top: ${insets.top}px  bottom: ${insets.bottom}px`,
+    `100vh: ${unitHeight('100vh')}  100svh: ${unitHeight('100svh')}`,
+    `100lvh: ${unitHeight('100lvh')}  100dvh: ${unitHeight('100dvh')}`,
+    `--app-height: ${getComputedStyle(document.documentElement).getPropertyValue('--app-height') || 'unset'}`,
     `scrollY: ${window.scrollY}  sw: ${navigator.serviceWorker?.controller ? 'controlling' : 'none'}`,
     `gear <a>: ${styleSummary(gear, ['filter', 'box-shadow', 'text-shadow', 'outline-style', 'outline-color', 'transition-property', '-webkit-tap-highlight-color', 'color'])}`,
     `gear <svg>: ${styleSummary(gear?.querySelector('svg') ?? null, ['filter', 'stroke', 'stroke-width', 'width', 'height'])}`,

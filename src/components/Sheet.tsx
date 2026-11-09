@@ -44,7 +44,7 @@ export function Sheet({ title, onClose, children }: SheetProps) {
   }, [onClose])
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col justify-end" role="dialog" aria-modal="true" aria-label={title}>
+    <div className="fixed inset-x-0 top-0 z-50 flex h-[var(--app-height,100dvh)] flex-col justify-end" role="dialog" aria-modal="true" aria-label={title}>
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
       <div
         className="relative flex max-h-[90dvh] flex-col rounded-t-2xl bg-surface"

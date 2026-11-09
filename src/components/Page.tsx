@@ -18,7 +18,7 @@ export function Page({ title, back, action, children }: PageProps) {
   return (
     <div className="min-h-full">
       <header
-        className="sticky top-0 z-10 bg-bg/85 backdrop-blur-xl"
+        className="sticky top-0 z-10 bg-bg"
         style={{ paddingTop: 'env(safe-area-inset-top)', paddingLeft: 'env(safe-area-inset-left)', paddingRight: 'env(safe-area-inset-right)' }}
       >
         <div className="flex h-11 items-center justify-between px-1">

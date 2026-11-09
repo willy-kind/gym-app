@@ -13,3 +13,23 @@ export function keepsKeyboardOpen(el: { tagName: string; type?: string; isConten
   if (tag === 'INPUT') return !NON_TEXT_INPUTS.has((el.type ?? 'text').toLowerCase())
   return false
 }
+
+/**
+ * Height for the app shell. iOS standalone mode can report a layout viewport that
+ * is exactly the top safe-area inset shorter than the screen (innerHeight 793 on an
+ * 852pt screen with a 59pt inset), so every 100vh/dvh height stops short. In that
+ * case use the screen height. Portrait only: iOS doesn't swap screen.height when
+ * rotated.
+ */
+export function computeAppHeight(input: {
+  standalone: boolean
+  portrait: boolean
+  screenHeight: number
+  innerHeight: number
+  safeAreaTop: number
+}): number {
+  const { standalone, portrait, screenHeight, innerHeight, safeAreaTop } = input
+  const shortBy = screenHeight - innerHeight
+  if (standalone && portrait && safeAreaTop > 0 && Math.abs(shortBy - safeAreaTop) <= 2) return screenHeight
+  return innerHeight
+}
