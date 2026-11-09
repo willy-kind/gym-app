@@ -10,6 +10,7 @@
   --label-2: #ebebf599;
   --accent: #0a84ff;
   --danger: #ff453a;
+  --success: #30d158;
   --bar: #121212f0;
   color-scheme: dark;
 }
@@ -24,6 +25,7 @@
     --label-2: #3c3c4399;
     --accent: #007aff;
     --danger: #ff3b30;
+    --success: #34c759;
     --bar: #f9f9f9f0;
     color-scheme: light;
   }
@@ -38,6 +40,7 @@
   --color-label-2: var(--label-2);
   --color-accent: var(--accent);
   --color-danger: var(--danger);
+  --color-success: var(--success);
   --color-bar: var(--bar);
   --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
 }

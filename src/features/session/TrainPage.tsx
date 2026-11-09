@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Navigate, useNavigate } from 'react-router'
 import { Page } from '../../components/Page'
 import { ButtonRow, ListGroup } from '../../components/List'
@@ -8,6 +9,7 @@ import { getActiveSession, getLastTrainedByDay, startSession } from '../../db/se
 import { useLiveQuery } from '../../db/useLiveQuery'
 import { formatDay } from '../../lib/date'
 import { suggestNextDay } from '../../lib/session'
+import { clearRest } from './restTimerStore'
 
 async function loadTrain() {
   const active = await getActiveSession()
@@ -22,6 +24,12 @@ async function loadTrain() {
 export function TrainPage() {
   const data = useLiveQuery(loadTrain, [])
   const navigate = useNavigate()
+
+  // A rest timer can't outlive its workout (e.g. one deleted from History).
+  const noSession = data !== undefined && data.activeId === undefined
+  useEffect(() => {
+    if (noSession) clearRest()
+  }, [noSession])
 
   if (!data) return <Page title="Train" />
   if (data.activeId !== undefined) return <Navigate to={`/train/session/${data.activeId}`} replace />

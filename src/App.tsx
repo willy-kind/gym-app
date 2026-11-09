@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router'
 import { TabBar } from './components/TabBar'
 import { UpdateToast } from './components/UpdateToast'
+import { RestTimerBar } from './features/session/RestTimerBar'
 import { TrainPage } from './features/session/TrainPage'
 import { SessionPage } from './features/session/SessionPage'
 import { ProgramsPage } from './features/programs/ProgramsPage'
@@ -27,6 +28,7 @@ export function App() {
         </Routes>
       </main>
       <UpdateToast />
+      <RestTimerBar />
       <TabBar />
     </div>
   )

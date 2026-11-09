@@ -12,6 +12,8 @@ import { formatClock, formatDuration } from '../../lib/date'
 import { buildSessionExercises, isBodyweightExercise, nextIncomplete, type LoggedSet, type SessionExercise } from '../../lib/session'
 import { ExercisePickerSheet } from '../programs/ExercisePickerSheet'
 import { clearAdhoc, loadAdhoc, saveAdhoc } from './adhoc'
+import { clearRest, startRest } from './restTimerStore'
+import { DEFAULT_REST_SECONDS } from '../../lib/targets'
 import { ExerciseCard } from './ExerciseCard'
 import { SetConsole } from './SetConsole'
 import { SetSheet } from './SetSheet'
@@ -54,7 +56,9 @@ function SessionScreen({ sessionId }: { sessionId: number }) {
   }
 
   const log = async (e: SessionExercise, values: { weight: number; reps: number; isWarmup: boolean }) => {
-    await attempt(() => logSet({ sessionId, exerciseId: e.exerciseId, ...values }))
+    const saved = await attempt(() => logSet({ sessionId, exerciseId: e.exerciseId, ...values }))
+    if (!saved) return
+    startRest(e.plan?.restSeconds ?? DEFAULT_REST_SECONDS, { sessionId, exerciseName: e.name })
     // Move on once the planned sets for this exercise are done.
     if (!values.isWarmup && e.plan && e.workingSets + 1 >= e.plan.targetSets) {
       const index = exercises.indexOf(e)
@@ -66,8 +70,9 @@ function SessionScreen({ sessionId }: { sessionId: number }) {
   }
 
   const end = async (action: () => Promise<void>) => {
-    await attempt(action)
+    if (!(await attempt(action))) return
     clearAdhoc(sessionId)
+    clearRest()
     void navigate('/train', { replace: true })
   }
 

@@ -75,7 +75,7 @@ export function ConfirmSheet({
   title: string
   message: string
   confirmLabel: string
-  onConfirm: () => Promise<void> | void
+  onConfirm: () => Promise<unknown> | void
   onClose: () => void
 }) {
   return (
