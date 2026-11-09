@@ -12,6 +12,7 @@ import { ExercisesPage } from './features/programs/ExercisesPage'
 import { HistoryPage } from './features/history/HistoryPage'
 import { SessionDetailPage } from './features/history/SessionDetailPage'
 import { ProgressPage } from './features/progress/ProgressPage'
+import { SettingsPage } from './features/settings/SettingsPage'
 
 // Charts pull in Recharts; load them only when a chart screen is opened.
 const ExerciseProgressPage = lazy(() => import('./features/progress/ExerciseProgressPage'))
@@ -38,6 +39,7 @@ export function App() {
               </Suspense>
             }
           />
+          <Route path="/settings" element={<SettingsPage />} />
           <Route path="*" element={<Navigate to="/train" replace />} />
         </Routes>
       </main>

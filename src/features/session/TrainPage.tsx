@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Navigate, useNavigate } from 'react-router'
+import { Link, Navigate, useNavigate } from 'react-router'
 import { Page } from '../../components/Page'
 import { ButtonRow, ListGroup } from '../../components/List'
 import { BottomAction } from '../../components/Button'
@@ -20,6 +20,15 @@ async function loadTrain() {
   return { activeId: undefined, details, lastTrained }
 }
 
+const settingsLink = (
+  <Link to="/settings" aria-label="Settings" className="flex min-h-11 min-w-11 items-center justify-center text-accent">
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" />
+    </svg>
+  </Link>
+)
+
 /** Pick a day to train, or jump straight back into an unfinished session. */
 export function TrainPage() {
   const data = useLiveQuery(loadTrain, [])
@@ -31,7 +40,7 @@ export function TrainPage() {
     if (noSession) clearRest()
   }, [noSession])
 
-  if (!data) return <Page title="Train" />
+  if (!data) return <Page title="Train" action={settingsLink} />
   if (data.activeId !== undefined) return <Navigate to={`/train/session/${data.activeId}`} replace />
 
   const { details, lastTrained } = data
@@ -52,7 +61,7 @@ export function TrainPage() {
   const primary = [...withLast].sort((a, b) => b.last.at - a.last.at)[0]
 
   return (
-    <Page title="Train">
+    <Page title="Train" action={settingsLink}>
       {withLast.map(({ detail, next }) => (
         <ListGroup key={detail.program.id} header={detail.program.name}>
           {detail.days.map(({ day, exerciseCount }) => {
