@@ -51,6 +51,13 @@ body,
   height: 100%;
 }
 
+/* The document never scrolls; only <main> and sheet bodies do. Otherwise iOS can
+   pan the whole page for the keyboard and leave it scrolled after it closes. */
+html,
+body {
+  overflow: hidden;
+}
+
 body {
   margin: 0;
   background: var(--bg);

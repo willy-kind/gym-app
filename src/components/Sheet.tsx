@@ -8,11 +8,20 @@ function useKeyboardInset(): number {
     if (!vv) return
     const update = () => setInset(Math.max(0, window.innerHeight - vv.height - vv.offsetTop))
     update()
+    // visualViewport can miss the keyboard closing; check again once it has gone.
+    let timer: ReturnType<typeof setTimeout> | undefined
+    const later = () => {
+      clearTimeout(timer)
+      timer = setTimeout(update, 100)
+    }
     vv.addEventListener('resize', update)
     vv.addEventListener('scroll', update)
+    window.addEventListener('focusout', later)
     return () => {
+      clearTimeout(timer)
       vv.removeEventListener('resize', update)
       vv.removeEventListener('scroll', update)
+      window.removeEventListener('focusout', later)
     }
   }, [])
   return inset

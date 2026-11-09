@@ -21,6 +21,7 @@ Tick each box. If something fails, note the step number and what you saw.
 - [ ] 1.1 Open the URL in **Safari** → Share → **Add to Home Screen**. The name is "Gym" and the icon is a blue dumbbell on black.
 - [ ] 1.2 Open it from the Home Screen: full screen, no Safari address bar or toolbar.
 - [ ] 1.3 The clock/battery area doesn't cover any text; the tab bar sits above the home indicator.
+- [ ] 1.3b The gear icon on Train and the Edit/Done buttons sit fully below the Dynamic Island: right after launch, after switching to another app and back, and after using the keyboard.
 - [ ] 1.4 Four tabs work: **Train / Programs / History / Progress**. Train is selected on launch.
 - [ ] 1.5 After a few seconds a "Ready to work offline" banner appears once; **OK** dismisses it.
 - [ ] 1.6 Dark mode is the default look. Switch the phone to Light mode (Settings → Display): the app follows. Check the status bar clock is still readable in light mode (known risk).
@@ -64,6 +65,7 @@ Tick each box. If something fails, note the step number and what you saw.
 - [ ] 4.11 Tap a logged set → change reps → Save. Tap another → **Delete set** → "Tap again to delete" → gone.
 - [ ] 4.12 **Add exercise** mid-workout → pick one → it appears at the end and becomes active; log a set on it.
 - [ ] 4.13 With the keyboard open on the weight or reps box, the panel and Log set button remain usable.
+- [ ] 4.13b Tap the weight box, then the reps box: the keyboard stays up. Close the keyboard (Done or tap elsewhere): the set panel and tab bar sit flush with the bottom of the screen, with no gap, without having to scroll. Repeat a few times, also with a sheet open (e.g. edit a set).
 - [ ] 4.14 **Never lose a set:** log a set, then force-quit the app. Reopen: you land straight back in the workout with every set present.
 - [ ] 4.15 Lock the phone for a minute mid-workout, unlock: still in the workout, nothing lost.
 - [ ] 4.16 **Finish** (top right or bottom): summary shows sets, exercises, duration, and lists exercises with fewer sets than planned. Confirm → back to Train; Upper A shows "Last: Today" and **Next** moves to Lower A.
