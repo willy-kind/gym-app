@@ -2,6 +2,8 @@ import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router'
 import { TabBar } from './components/TabBar'
 import { UpdateToast } from './components/UpdateToast'
+import { useWakeLock } from './components/useWakeLock'
+import { useSettings } from './features/settings/settingsStore'
 import { RestTimerBar } from './features/session/RestTimerBar'
 import { TrainPage } from './features/session/TrainPage'
 import { SessionPage } from './features/session/SessionPage'
@@ -18,6 +20,7 @@ import { SettingsPage } from './features/settings/SettingsPage'
 const ExerciseProgressPage = lazy(() => import('./features/progress/ExerciseProgressPage'))
 
 export function App() {
+  useWakeLock(useSettings().keepAwake)
   return (
     // app-height (index.css): full screen height, working around the iOS standalone bug.
     <div className="app-height fixed inset-x-0 top-0 flex flex-col bg-bg">

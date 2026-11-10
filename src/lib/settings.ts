@@ -9,13 +9,15 @@ export interface Settings {
   defaultRestSeconds: number
   /** Short beep when the rest timer finishes (app in the foreground only). */
   timerSound: boolean
+  /** Stop the screen dimming and locking while the app is open. */
+  keepAwake: boolean
   /** When a backup was last exported from this phone. */
   lastBackupAt?: number
   /** Your own question at the top of "Share with AI" text; absent or blank means the default. */
   aiQuestion?: string
 }
 
-export const DEFAULT_SETTINGS: Settings = { unit: 'kg', defaultRestSeconds: DEFAULT_REST_SECONDS, timerSound: false }
+export const DEFAULT_SETTINGS: Settings = { unit: 'kg', defaultRestSeconds: DEFAULT_REST_SECONDS, timerSound: false, keepAwake: true }
 
 export const REST_STEP_SECONDS = 15
 export const MIN_DEFAULT_REST_SECONDS = 15
@@ -40,6 +42,7 @@ export function parseSettings(json: string | null): Settings {
     s.defaultRestSeconds = r.defaultRestSeconds
   }
   if (typeof r.timerSound === 'boolean') s.timerSound = r.timerSound
+  if (typeof r.keepAwake === 'boolean') s.keepAwake = r.keepAwake
   if (typeof r.lastBackupAt === 'number' && Number.isFinite(r.lastBackupAt)) s.lastBackupAt = r.lastBackupAt
   if (typeof r.aiQuestion === 'string') s.aiQuestion = r.aiQuestion.slice(0, MAX_AI_QUESTION_LENGTH)
   return s

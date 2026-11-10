@@ -11,6 +11,7 @@ import { BackupSection } from '../import-export/BackupSection'
 import { StrongImportSection } from '../import-export/StrongImportSection'
 import { unlockAudio, playRestDone } from '../session/sound'
 import { updateSettings, useSettings } from './settingsStore'
+import { wakeLockSupported } from '../../components/useWakeLock'
 
 export function SettingsPage() {
   const settings = useSettings()
@@ -35,6 +36,15 @@ export function SettingsPage() {
             onChange={(unit) => updateSettings({ unit })}
           />
         </li>
+      </ListGroup>
+
+      <ListGroup header="Screen">
+        <SwitchRow
+          label="Keep screen awake"
+          detail={wakeLockSupported ? 'While the app is open, the phone won’t dim or lock. Uses a bit more battery.' : 'Not supported on this phone.'}
+          on={settings.keepAwake && wakeLockSupported}
+          onChange={(keepAwake) => wakeLockSupported && updateSettings({ keepAwake })}
+        />
       </ListGroup>
 
       <ListGroup header="Rest timer" footer="Default rest is used for exercises without a rest target, and as the starting rest when you add an exercise to a program day.">

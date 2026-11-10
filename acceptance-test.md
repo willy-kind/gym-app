@@ -140,6 +140,7 @@ Have at least 3 finished workouts with different weights first (History → Edit
 - [ ] 9.3 **Default rest** −/+ (15 s steps). Start an empty workout, add an exercise, log a set: the timer uses the default. Adding a brand-new exercise to a program day starts with this rest.
 - [ ] 9.4 **Sound when rest is over** → turn on: you hear a short beep preview (ring/silent switch on ring). Log a set with a short rest and keep the app open: it beeps once when the rest ends. With the app in the background: no beep (expected).
 - [ ] 9.5 **AI feedback** → edit the question (e.g. "How is my bench going? Keep it short."), then History → **Share with AI…**: the preview starts with your question, followed by the "How to read the log" note. Empty the box: the default question comes back in the shared text. **Reset to default** restores it in the box. Close and reopen the app: your question is kept.
+- [ ] 9.6 **Keep screen awake** (on by default): with the app open and Auto-Lock set to e.g. 30 s, put the phone down: the screen stays on (no dimming, no lock). Switch to another app and back, or lock and unlock: it still stays on. Turn the switch off: the phone locks as normal again. In Low Power Mode iOS may refuse; that's expected.
 
 ## 10. Updates
 
