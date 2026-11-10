@@ -46,7 +46,7 @@ function RestTimerView({ timer, placement, next = '' }: { timer: RestTimer; plac
   useEffect(() => {
     if (done && over <= 2 && alarmedFor !== timer.endsAt && getSettings().timerSound) {
       alarmedFor = timer.endsAt
-      void playRestDone(getSettings().alarmMusic)
+      void playRestDone()
     }
   }, [done, over, timer.endsAt])
 

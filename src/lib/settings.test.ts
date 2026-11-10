@@ -6,22 +6,21 @@ describe('parseSettings', () => {
     expect(parseSettings(null)).toEqual(DEFAULT_SETTINGS)
     expect(parseSettings('{oops')).toEqual(DEFAULT_SETTINGS)
     expect(parseSettings('[1,2]')).toEqual(DEFAULT_SETTINGS)
-    expect(DEFAULT_SETTINGS).toEqual({ unit: 'kg', defaultRestSeconds: 120, timerSound: true, alarmMusic: 'duck', keepAwake: true })
+    expect(DEFAULT_SETTINGS).toEqual({ unit: 'kg', defaultRestSeconds: 120, timerSound: true, keepAwake: true })
   })
 
   it('keeps valid values', () => {
-    expect(parseSettings(JSON.stringify({ unit: 'lb', defaultRestSeconds: 90, timerSound: true, alarmMusic: 'pause', keepAwake: false, lastBackupAt: 123 }))).toEqual({
+    expect(parseSettings(JSON.stringify({ unit: 'lb', defaultRestSeconds: 90, timerSound: true, keepAwake: false, lastBackupAt: 123 }))).toEqual({
       unit: 'lb',
       defaultRestSeconds: 90,
       timerSound: true,
-      alarmMusic: 'pause',
       keepAwake: false,
       lastBackupAt: 123,
     })
   })
 
   it('drops invalid values field by field', () => {
-    expect(parseSettings(JSON.stringify({ unit: 'stone', defaultRestSeconds: 5, timerSound: 'yes', alarmMusic: 'loud', keepAwake: 1, lastBackupAt: 'x' }))).toEqual(DEFAULT_SETTINGS)
+    expect(parseSettings(JSON.stringify({ unit: 'stone', defaultRestSeconds: 5, timerSound: 'yes', keepAwake: 1, lastBackupAt: 'x' }))).toEqual(DEFAULT_SETTINGS)
     expect(parseSettings(JSON.stringify({ defaultRestSeconds: 601 })).defaultRestSeconds).toBe(120)
     expect(parseSettings(JSON.stringify({ defaultRestSeconds: 92.5 })).defaultRestSeconds).toBe(120)
   })
