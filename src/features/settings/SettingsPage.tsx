@@ -62,7 +62,7 @@ export function SettingsPage() {
         </li>
         <SwitchRow
           label="Sound when rest is over"
-          detail="Plays again after 10 s if you haven’t dismissed it. Lowers music briefly while it plays. Only while the app is open; the silent switch may mute it."
+          detail="Lowers music briefly while it plays. Only while the app is open; the silent switch may mute it."
           on={settings.timerSound}
           onChange={(timerSound) => {
             updateSettings({ timerSound })

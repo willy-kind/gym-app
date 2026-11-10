@@ -87,10 +87,10 @@ Tick each box. If something fails, note the step number and what you saw.
 - [ ] 5.3 Lock the phone for ~60 s, unlock: the time has dropped by ~60 s (not paused).
 - [ ] 5.4 Switch to another app for ~30 s and back: correct time.
 - [ ] 5.5 Force-quit and reopen during a rest: the timer is still running with the right time.
-- [ ] 5.6 Let it run out: the ring turns **green**, says "Rest over · next" and counts **+0:01, +0:02…**; −15 disappears. **OK** dismisses it.
+- [ ] 5.6 Let it run out without touching anything: the alarm sounds once, the ring turns **green** with **Go** ("Rest over · go"), and after ~4 s the timer disappears by itself; the panel shows the next set. No tap needed.
 - [ ] 5.7 Logging the next set restarts the countdown with that exercise's rest.
 - [ ] 5.8 During a rest switch to Programs: the timer moves to a bar above the tab bar; tapping the time returns to the workout, where it is back in the set panel.
-- [ ] 5.9 **Skip** hides the timer. Finishing or discarding the workout also clears it.
+- [ ] 5.9 **Skip** hides the timer early. Finishing or discarding the workout also clears it.
 - [ ] 5.10 With the timer running in the set panel and the keyboard closed, the exercise cards above still have comfortable room on your phone's screen.
 
 ## 6. History
@@ -139,7 +139,7 @@ Have at least 3 finished workouts with different weights first (History → Edit
 - [ ] 9.2 In lb, log a set of 135 lb, switch back to **kg**: it shows 61.24 kg. Switch to lb again: 135 lb (no drift).
 - [ ] 9.3 **Default rest** −/+ (15 s steps). Start an empty workout, add an exercise, log a set: the timer uses the default. Adding a brand-new exercise to a program day starts with this rest.
 - [ ] 9.4 **Sound when rest is over** → turn on: you hear a short beep preview (ring/silent switch on ring). Log a set with a short rest and keep the app open: it beeps once when the rest ends. With the app in the background: no beep (expected).
-- [ ] 9.4b **Louder alarm with music:** play Spotify at normal volume, then Settings → **Test alarm**: three rising chimes (~2 s), clearly audible over the music; the music dips while it plays and comes back by itself (it shouldn't pause). Then in a workout let a short rest run out: the alarm plays, and again 10 s later if you haven't tapped OK. Lock and unlock the phone, tap anything, let a rest run out: it still sounds.
+- [ ] 9.4b **Louder alarm with music:** play Spotify at normal volume, then Settings → **Test alarm**: three rising chimes (~2 s), clearly audible over the music; the music dips while it plays and comes back by itself (it shouldn't pause). Then in a workout let a short rest run out: the alarm plays once and the timer clears itself. Lock and unlock the phone, tap anything, let a rest run out: it still sounds.
 - [ ] 9.5 **AI feedback** → edit the question (e.g. "How is my bench going? Keep it short."), then History → **Share with AI…**: the preview starts with your question, followed by the "How to read the log" note. Empty the box: the default question comes back in the shared text. **Reset to default** restores it in the box. Close and reopen the app: your question is kept.
 - [ ] 9.6 **Keep screen awake** (on by default): with the app open and Auto-Lock set to e.g. 30 s, put the phone down: the screen stays on (no dimming, no lock). Switch to another app and back, or lock and unlock: it still stays on. Turn the switch off: the phone locks as normal again. In Low Power Mode iOS may refuse; that's expected.
 

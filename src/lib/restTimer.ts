@@ -12,8 +12,8 @@ export interface RestTimer {
 }
 
 export const REST_ADJUST_SECONDS = 15
-/** A finished timer is cleared after this much overtime. */
-export const MAX_OVERTIME_SECONDS = 10 * 60
+/** A finished rest shows "Go" this long, then clears itself so the next set can start; no tap needed. */
+export const REST_OVER_SHOW_SECONDS = 4
 
 export function createRestTimer(seconds: number, now: number, meta: { sessionId: number; exerciseName: string }): RestTimer {
   return { startedAt: now, endsAt: now + Math.max(0, seconds) * 1000, ...meta }

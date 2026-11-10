@@ -1,7 +1,7 @@
 import { useEffect, type ReactNode } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import { useNow } from '../../components/useNow'
-import { isDone, MAX_OVERTIME_SECONDS, overtimeSeconds, progress, remainingSeconds, REST_ADJUST_SECONDS, type RestTimer } from '../../lib/restTimer'
+import { isDone, overtimeSeconds, REST_OVER_SHOW_SECONDS, progress, remainingSeconds, REST_ADJUST_SECONDS, type RestTimer } from '../../lib/restTimer'
 import { formatRest } from '../../lib/targets'
 import { adjustRest, clearRest, useRestTimer } from './restTimerStore'
 import { getSettings } from '../settings/settingsStore'
@@ -25,12 +25,8 @@ export function PanelRestTimer({ sessionId, next }: { sessionId: number; next: s
   return <RestTimerView timer={timer} placement="panel" next={next} />
 }
 
-// Shared by both placements so moving between screens never repeats an alarm.
-// Which rest (by end time) has had its first alarm, and its reminder.
+// Shared by both placements so moving between screens never repeats the alarm.
 let alarmedFor: number | null = null
-let remindedFor: number | null = null
-/** If the rest-over timer hasn't been dismissed, sound the alarm once more after this many seconds. */
-const REMIND_AFTER_S = 10
 
 function RestTimerView({ timer, placement, next = '' }: { timer: RestTimer; placement: 'bar' | 'panel'; next?: string }) {
   // Ticks only while a timer is shown. Every value is recomputed from the stored end time.
@@ -39,25 +35,22 @@ function RestTimerView({ timer, placement, next = '' }: { timer: RestTimer; plac
   const done = isDone(timer, now)
   const over = overtimeSeconds(timer, now)
 
+  // When the rest runs out it shows "Go" for a moment, then clears itself: the
+  // next set starts without a tap.
   useEffect(() => {
-    if (over > MAX_OVERTIME_SECONDS) clearRest()
-  }, [over])
+    if (done && over >= REST_OVER_SHOW_SECONDS) clearRest()
+  }, [done, over])
 
-  // Alarm as the rest runs out, and once more 10 s later if still not dismissed,
-  // if enabled. Not when coming back to a long-finished timer (the app was in
-  // the background when it ended).
+  // Alarm once as the rest runs out, if enabled. Not when coming back to a
+  // finished timer (the app was in the background when it ended).
   useEffect(() => {
-    if (!done || !getSettings().timerSound) return
-    if (over <= 2 && alarmedFor !== timer.endsAt) {
+    if (done && over <= 2 && alarmedFor !== timer.endsAt && getSettings().timerSound) {
       alarmedFor = timer.endsAt
-      void playRestDone()
-    } else if (over >= REMIND_AFTER_S && over <= REMIND_AFTER_S + 2 && alarmedFor === timer.endsAt && remindedFor !== timer.endsAt) {
-      remindedFor = timer.endsAt
       void playRestDone()
     }
   }, [done, over, timer.endsAt])
 
-  if (placement === 'panel') return <PanelRing timer={timer} now={now} done={done} over={over} next={next} />
+  if (placement === 'panel') return <PanelRing timer={timer} now={now} done={done} next={next} />
 
   return (
     <div
@@ -76,8 +69,8 @@ function RestTimerView({ timer, placement, next = '' }: { timer: RestTimer; plac
         className="flex min-h-14 min-w-0 flex-1 flex-col items-center justify-center"
         aria-label={done ? 'Rest over, go to workout' : 'Go to workout'}
       >
-        <span className={`max-w-full truncate text-[12px] ${done ? 'font-semibold' : 'text-label-2'}`}>{done ? 'Rest over — next set' : `Rest · ${timer.exerciseName}`}</span>
-        <span className="text-[26px] leading-none font-bold tabular-nums">{done ? `+${formatRest(over)}` : formatRest(remainingSeconds(timer, now))}</span>
+        <span className={`max-w-full truncate text-[12px] ${done ? 'font-semibold' : 'text-label-2'}`}>{done ? 'Rest over' : `Rest · ${timer.exerciseName}`}</span>
+        <span className="text-[26px] leading-none font-bold tabular-nums">{done ? 'Go' : formatRest(remainingSeconds(timer, now))}</span>
       </button>
       <BarButton label={`Add ${REST_ADJUST_SECONDS} seconds`} onClick={() => adjustRest(REST_ADJUST_SECONDS)} done={done}>
         +{REST_ADJUST_SECONDS}s
@@ -96,7 +89,7 @@ const RING_C = 2 * Math.PI * RING_R
  * The rest timer at the top of the set panel: a progress ring with the time, what's
  * next (the panel's set), and pill buttons. It replaces the panel's own title row.
  */
-function PanelRing({ timer, now, done, over, next }: { timer: RestTimer; now: number; done: boolean; over: number; next: string }) {
+function PanelRing({ timer, now, done, next }: { timer: RestTimer; now: number; done: boolean; next: string }) {
   const left = done ? 1 : progress(timer, now)
   return (
     <div role="timer" aria-live="off" className="mb-3 flex items-center gap-3">
@@ -116,24 +109,27 @@ function PanelRing({ timer, now, done, over, next }: { timer: RestTimer; now: nu
           />
         </svg>
         <span className="absolute inset-0 flex items-center justify-center text-[17px] font-bold tabular-nums">
-          {done ? `+${formatRest(over)}` : formatRest(remainingSeconds(timer, now))}
+          {done ? 'Go' : formatRest(remainingSeconds(timer, now))}
         </span>
       </div>
       <div className="min-w-0 flex-1">
-        <p className={`truncate text-[13px] ${done ? 'font-semibold text-success' : 'text-label-2'}`}>{done ? 'Rest over · next' : 'Resting · then'}</p>
+        <p className={`truncate text-[13px] ${done ? 'font-semibold text-success' : 'text-label-2'}`}>{done ? 'Rest over · go' : 'Resting · then'}</p>
         <p className="truncate text-[15px] font-semibold">{next}</p>
       </div>
+      {/* Nothing to press once the rest is over: it clears itself in a moment. */}
       {!done && (
-        <PillButton label={`Remove ${REST_ADJUST_SECONDS} seconds`} onClick={() => adjustRest(-REST_ADJUST_SECONDS)}>
-          −{REST_ADJUST_SECONDS}
-        </PillButton>
+        <>
+          <PillButton label={`Remove ${REST_ADJUST_SECONDS} seconds`} onClick={() => adjustRest(-REST_ADJUST_SECONDS)}>
+            −{REST_ADJUST_SECONDS}
+          </PillButton>
+          <PillButton label={`Add ${REST_ADJUST_SECONDS} seconds`} onClick={() => adjustRest(REST_ADJUST_SECONDS)}>
+            +{REST_ADJUST_SECONDS}
+          </PillButton>
+          <PillButton label="Skip rest" onClick={clearRest}>
+            Skip
+          </PillButton>
+        </>
       )}
-      <PillButton label={`Add ${REST_ADJUST_SECONDS} seconds`} onClick={() => adjustRest(REST_ADJUST_SECONDS)}>
-        +{REST_ADJUST_SECONDS}
-      </PillButton>
-      <PillButton label={done ? 'Dismiss' : 'Skip rest'} onClick={clearRest}>
-        {done ? 'OK' : 'Skip'}
-      </PillButton>
     </div>
   )
 }
