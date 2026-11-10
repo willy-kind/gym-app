@@ -17,7 +17,7 @@ export interface Settings {
   aiQuestion?: string
 }
 
-export const DEFAULT_SETTINGS: Settings = { unit: 'kg', defaultRestSeconds: DEFAULT_REST_SECONDS, timerSound: false, keepAwake: true }
+export const DEFAULT_SETTINGS: Settings = { unit: 'kg', defaultRestSeconds: DEFAULT_REST_SECONDS, timerSound: true, keepAwake: true }
 
 export const REST_STEP_SECONDS = 15
 export const MIN_DEFAULT_REST_SECONDS = 15

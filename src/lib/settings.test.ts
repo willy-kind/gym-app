@@ -6,7 +6,7 @@ describe('parseSettings', () => {
     expect(parseSettings(null)).toEqual(DEFAULT_SETTINGS)
     expect(parseSettings('{oops')).toEqual(DEFAULT_SETTINGS)
     expect(parseSettings('[1,2]')).toEqual(DEFAULT_SETTINGS)
-    expect(DEFAULT_SETTINGS).toEqual({ unit: 'kg', defaultRestSeconds: 120, timerSound: false, keepAwake: true })
+    expect(DEFAULT_SETTINGS).toEqual({ unit: 'kg', defaultRestSeconds: 120, timerSound: true, keepAwake: true })
   })
 
   it('keeps valid values', () => {

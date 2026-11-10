@@ -25,8 +25,12 @@ export function PanelRestTimer({ sessionId, next }: { sessionId: number; next: s
   return <RestTimerView timer={timer} placement="panel" next={next} />
 }
 
-// Shared by both placements so moving between screens never beeps twice for one rest.
-let beepedFor: number | null = null
+// Shared by both placements so moving between screens never repeats an alarm.
+// Which rest (by end time) has had its first alarm, and its reminder.
+let alarmedFor: number | null = null
+let remindedFor: number | null = null
+/** If the rest-over timer hasn't been dismissed, sound the alarm once more after this many seconds. */
+const REMIND_AFTER_S = 10
 
 function RestTimerView({ timer, placement, next = '' }: { timer: RestTimer; placement: 'bar' | 'panel'; next?: string }) {
   // Ticks only while a timer is shown. Every value is recomputed from the stored end time.
@@ -39,12 +43,17 @@ function RestTimerView({ timer, placement, next = '' }: { timer: RestTimer; plac
     if (over > MAX_OVERTIME_SECONDS) clearRest()
   }, [over])
 
-  // Beep once as the rest runs out, if enabled. Not when coming back to an
-  // already-finished timer (the app was in the background when it ended).
+  // Alarm as the rest runs out, and once more 10 s later if still not dismissed,
+  // if enabled. Not when coming back to a long-finished timer (the app was in
+  // the background when it ended).
   useEffect(() => {
-    if (done && over <= 2 && beepedFor !== timer.endsAt && getSettings().timerSound) {
-      beepedFor = timer.endsAt
-      playRestDone()
+    if (!done || !getSettings().timerSound) return
+    if (over <= 2 && alarmedFor !== timer.endsAt) {
+      alarmedFor = timer.endsAt
+      void playRestDone()
+    } else if (over >= REMIND_AFTER_S && over <= REMIND_AFTER_S + 2 && alarmedFor === timer.endsAt && remindedFor !== timer.endsAt) {
+      remindedFor = timer.endsAt
+      void playRestDone()
     }
   }, [done, over, timer.endsAt])
 

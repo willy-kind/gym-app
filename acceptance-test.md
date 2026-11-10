@@ -139,6 +139,7 @@ Have at least 3 finished workouts with different weights first (History → Edit
 - [ ] 9.2 In lb, log a set of 135 lb, switch back to **kg**: it shows 61.24 kg. Switch to lb again: 135 lb (no drift).
 - [ ] 9.3 **Default rest** −/+ (15 s steps). Start an empty workout, add an exercise, log a set: the timer uses the default. Adding a brand-new exercise to a program day starts with this rest.
 - [ ] 9.4 **Sound when rest is over** → turn on: you hear a short beep preview (ring/silent switch on ring). Log a set with a short rest and keep the app open: it beeps once when the rest ends. With the app in the background: no beep (expected).
+- [ ] 9.4b **Louder alarm with music:** play Spotify at normal volume, then Settings → **Test alarm**: three rising chimes (~2 s), clearly audible over the music; the music dips while it plays and comes back by itself (it shouldn't pause). Then in a workout let a short rest run out: the alarm plays, and again 10 s later if you haven't tapped OK. Lock and unlock the phone, tap anything, let a rest run out: it still sounds.
 - [ ] 9.5 **AI feedback** → edit the question (e.g. "How is my bench going? Keep it short."), then History → **Share with AI…**: the preview starts with your question, followed by the "How to read the log" note. Empty the box: the default question comes back in the shared text. **Reset to default** restores it in the box. Close and reopen the app: your question is kept.
 - [ ] 9.6 **Keep screen awake** (on by default): with the app open and Auto-Lock set to e.g. 30 s, put the phone down: the screen stays on (no dimming, no lock). Switch to another app and back, or lock and unlock: it still stays on. Turn the switch off: the phone locks as normal again. In Low Power Mode iOS may refuse; that's expected.
 
@@ -152,7 +153,7 @@ Have at least 3 finished workouts with different weights first (History → Edit
 
 - **No rest-over alert while the app is in the background or the phone is locked.** iOS web apps can't schedule local notifications without a push server; the timer is correct when you come back.
 - **No vibration** on iOS for web apps. The rest-over signal is the green bar, plus the optional beep.
-- **The beep** is muted by the ring/silent switch and only plays while the app is open.
+- **The alarm** only plays while the app is open (not in the background), and the ring/silent switch may still mute it.
 - **Status bar text is always white** (chosen for the dark look); in Light mode it may be hard to read.
 - **Exercises added mid-workout** are kept on the phone (not in the database) until their first set is logged; if the app is killed before that, add them again. No logged set is ever affected.
 - **Settings and the last-backup date are per phone** and not included in backups.

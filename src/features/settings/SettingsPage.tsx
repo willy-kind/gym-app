@@ -1,5 +1,6 @@
 import { useEffect, useId, useState } from 'react'
 import { Page } from '../../components/Page'
+import { Button } from '../../components/Button'
 import { ListGroup } from '../../components/List'
 import { Segmented } from '../../components/Segmented'
 import { Stepper } from '../../components/Stepper'
@@ -61,17 +62,30 @@ export function SettingsPage() {
         </li>
         <SwitchRow
           label="Sound when rest is over"
-          detail="Only while the app is open. The silent switch mutes it."
+          detail="Plays again after 10 s if you haven’t dismissed it. Lowers music briefly while it plays. Only while the app is open; the silent switch may mute it."
           on={settings.timerSound}
           onChange={(timerSound) => {
             updateSettings({ timerSound })
             if (timerSound) {
               // This tap unlocks audio on iOS, and lets you hear what it sounds like.
               unlockAudio()
-              setTimeout(playRestDone, 50)
+              setTimeout(() => void playRestDone(), 50)
             }
           }}
         />
+        {settings.timerSound && (
+          <li className="px-4 py-2">
+            <Button
+              variant="secondary"
+              onClick={() => {
+                unlockAudio()
+                setTimeout(() => void playRestDone(), 50)
+              }}
+            >
+              Test alarm
+            </Button>
+          </li>
+        )}
       </ListGroup>
 
       <ListGroup
