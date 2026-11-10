@@ -9,6 +9,8 @@ export interface Settings {
   defaultRestSeconds: number
   /** Short beep when the rest timer finishes (app in the foreground only). */
   timerSound: boolean
+  /** What the rest alarm does to music playing on the phone: lower it, or pause it. */
+  alarmMusic: 'duck' | 'pause'
   /** Stop the screen dimming and locking while the app is open. */
   keepAwake: boolean
   /** When a backup was last exported from this phone. */
@@ -17,7 +19,7 @@ export interface Settings {
   aiQuestion?: string
 }
 
-export const DEFAULT_SETTINGS: Settings = { unit: 'kg', defaultRestSeconds: DEFAULT_REST_SECONDS, timerSound: true, keepAwake: true }
+export const DEFAULT_SETTINGS: Settings = { unit: 'kg', defaultRestSeconds: DEFAULT_REST_SECONDS, timerSound: true, alarmMusic: 'duck', keepAwake: true }
 
 export const REST_STEP_SECONDS = 15
 export const MIN_DEFAULT_REST_SECONDS = 15
@@ -43,6 +45,7 @@ export function parseSettings(json: string | null): Settings {
   }
   if (typeof r.timerSound === 'boolean') s.timerSound = r.timerSound
   if (typeof r.keepAwake === 'boolean') s.keepAwake = r.keepAwake
+  if (r.alarmMusic === 'duck' || r.alarmMusic === 'pause') s.alarmMusic = r.alarmMusic
   if (typeof r.lastBackupAt === 'number' && Number.isFinite(r.lastBackupAt)) s.lastBackupAt = r.lastBackupAt
   if (typeof r.aiQuestion === 'string') s.aiQuestion = r.aiQuestion.slice(0, MAX_AI_QUESTION_LENGTH)
   return s

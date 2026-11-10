@@ -62,24 +62,39 @@ export function SettingsPage() {
         </li>
         <SwitchRow
           label="Sound when rest is over"
-          detail="Lowers music briefly while it plays. Only while the app is open; the silent switch may mute it."
+          detail="A soft bell when the rest is over. Only while the app is open; the silent switch may mute it."
           on={settings.timerSound}
           onChange={(timerSound) => {
             updateSettings({ timerSound })
             if (timerSound) {
               // This tap unlocks audio on iOS, and lets you hear what it sounds like.
               unlockAudio()
-              setTimeout(() => void playRestDone(), 50)
+              setTimeout(() => void playRestDone(settings.alarmMusic), 50)
             }
           }}
         />
         {settings.timerSound && (
-          <li className="px-4 py-2">
+          <li className="flex flex-col gap-2 px-4 pt-2 pb-3">
+            <span className="text-[13px] text-label-2">With music playing, the alarm should</span>
+            <Segmented
+              label="With music playing"
+              options={[
+                { value: 'duck', label: 'Lower music' },
+                { value: 'pause', label: 'Pause music' },
+              ]}
+              value={settings.alarmMusic}
+              onChange={(alarmMusic) => updateSettings({ alarmMusic })}
+            />
+            <span className="text-[13px] text-label-2">
+              {settings.alarmMusic === 'duck'
+                ? 'Music dips under the bell and keeps playing.'
+                : 'Music stops for the bell so you’re sure to hear it; iOS may not restart it by itself.'}
+            </span>
             <Button
               variant="secondary"
               onClick={() => {
                 unlockAudio()
-                setTimeout(() => void playRestDone(), 50)
+                setTimeout(() => void playRestDone(settings.alarmMusic), 50)
               }}
             >
               Test alarm
