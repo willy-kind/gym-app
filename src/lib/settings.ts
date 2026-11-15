@@ -2,6 +2,7 @@
 import { DEFAULT_REST_SECONDS, MAX_REST_SECONDS } from './targets'
 import type { WeightUnit } from './units'
 import { MAX_AI_QUESTION_LENGTH } from './aiExport'
+import { parseProgressSelection } from './progressList'
 
 export interface Settings {
   unit: WeightUnit
@@ -15,6 +16,8 @@ export interface Settings {
   lastBackupAt?: number
   /** Your own question at the top of "Share with AI" text; absent or blank means the default. */
   aiQuestion?: string
+  /** Exercise ids shown on the Progress tab, in order; absent means all, most recently trained first. */
+  progressExercises?: number[]
 }
 
 export const DEFAULT_SETTINGS: Settings = { unit: 'kg', defaultRestSeconds: DEFAULT_REST_SECONDS, timerSound: true, keepAwake: true }
@@ -45,6 +48,8 @@ export function parseSettings(json: string | null): Settings {
   if (typeof r.keepAwake === 'boolean') s.keepAwake = r.keepAwake
   if (typeof r.lastBackupAt === 'number' && Number.isFinite(r.lastBackupAt)) s.lastBackupAt = r.lastBackupAt
   if (typeof r.aiQuestion === 'string') s.aiQuestion = r.aiQuestion.slice(0, MAX_AI_QUESTION_LENGTH)
+  const progress = parseProgressSelection(r.progressExercises)
+  if (progress) s.progressExercises = progress
   return s
 }
 

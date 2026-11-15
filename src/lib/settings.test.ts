@@ -30,6 +30,13 @@ describe('parseSettings', () => {
     expect(parseSettings(JSON.stringify({ aiQuestion: 'x'.repeat(5000) })).aiQuestion).toHaveLength(2000)
     expect(parseSettings(JSON.stringify({ aiQuestion: 42 })).aiQuestion).toBeUndefined()
   })
+
+  it('keeps your Progress exercise choice, including an empty one', () => {
+    expect(parseSettings(JSON.stringify({ progressExercises: [4, 2] })).progressExercises).toEqual([4, 2])
+    expect(parseSettings(JSON.stringify({ progressExercises: [] })).progressExercises).toEqual([])
+    expect(parseSettings(JSON.stringify({ progressExercises: 'all' })).progressExercises).toBeUndefined()
+    expect(parseSettings(null).progressExercises).toBeUndefined()
+  })
 })
 
 describe('backupReminder', () => {

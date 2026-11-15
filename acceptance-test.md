@@ -121,6 +121,9 @@ Have at least 3 finished workouts with different weights first (History → Edit
 - [ ] 7.6 Spot-check e1RM: 80 kg × 6 → 96 kg (Epley: 80 × (1 + 6/30)).
 - [ ] 7.7 A bodyweight-only exercise (e.g. Hanging Leg Raise) shows **Most reps in a set** and **Total reps** instead.
 - [ ] 7.8 Switch Light/Dark with a chart open: colours follow.
+- [ ] 7.9 Progress → **Edit**: every trained exercise is under **Shown**. Hide two (red button): they move to **Hidden**. Move one to the top with the arrows. **Done**: the list shows only your exercises in your order, and the footer says how many are hidden.
+- [ ] 7.10 Close and reopen the app: your choice and order are kept. Log a set of an exercise that's hidden or never trained before: it doesn't appear until you **Show** it in Edit (it's added at the end).
+- [ ] 7.11 Edit → **Show all, most recent first**: back to the default list.
 
 ## 8. Backup & restore
 
