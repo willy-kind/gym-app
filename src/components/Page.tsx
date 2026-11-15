@@ -19,9 +19,7 @@ export function Page({ title, back, action, children }: PageProps) {
     <div className="min-h-full">
       <header
         className="sticky top-0 z-10 bg-bg"
-        // iOS home-screen mode can paint the sticky header's layer at 1× and upscale it (blurry icons).
-        // Forcing its own 3D layer makes WebKit rasterise it at the device's pixel ratio.
-        style={{ transform: 'translateZ(0)', paddingTop: 'env(safe-area-inset-top)', paddingLeft: 'env(safe-area-inset-left)', paddingRight: 'env(safe-area-inset-right)' }}
+        style={{ paddingTop: 'env(safe-area-inset-top)', paddingLeft: 'env(safe-area-inset-left)', paddingRight: 'env(safe-area-inset-right)' }}
       >
         <div className="flex h-11 items-center justify-between px-1">
           {back ? (
