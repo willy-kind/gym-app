@@ -52,6 +52,9 @@ Tick each box. If something fails, note the step number and what you saw.
 - [ ] 3.10 When typing in any sheet, the sheet stays above the keyboard and the Save button is reachable.
 - [ ] 3.11 **New program** → name it → add a day → add an exercise. Then **Archive** it: it moves to the Archived section and isn't offered on Train. **Unarchive**, then **Delete program** (confirm).
 - [ ] 3.12 Programs → **Exercise library**: search works; rename an exercise → the new name shows on every day using it. An exercise used anywhere has no Delete button; a fresh unused one can be deleted.
+- [ ] 3.13 Open **Upper/Lower** → **Export program** → share sheet opens → **Save to Files**: a file like `program-upper-lower.json`. Cancelling changes nothing.
+- [ ] 3.14 Programs → **Import program…** → pick that file: it opens as **Upper/Lower (2)** with the same days, exercises, targets and rest times. The Exercise library has no duplicates. Delete the copy afterwards.
+- [ ] 3.15 **Import program…** with a full backup file: a red message says it's a backup, not a program, and nothing changes.
 
 ## 4. Logging a workout
 

@@ -5,6 +5,9 @@ import { ButtonRow, EditRow, LinkRow, ListGroup } from '../../components/List'
 import { BottomAction } from '../../components/Button'
 import { ConfirmSheet, NameSheet } from '../../components/Dialogs'
 import { attempt } from '../../components/attempt'
+import { shareFile } from '../../components/shareFile'
+import { exportProgram } from '../../db/programTransfer'
+import { createProgramFile, programFileName, serializeProgramFile } from '../../lib/programFile'
 import { addDay, deleteDay, deleteProgram, getProgramDetail, renameDay, reorderDays, updateProgram } from '../../db/programs'
 import { useLiveQuery } from '../../db/useLiveQuery'
 import { moveItem } from '../../lib/order'
@@ -19,6 +22,8 @@ type Dialog =
 export function ProgramPage() {
   const programId = Number(useParams().programId)
   const detail = useLiveQuery(() => getProgramDetail(programId), [programId])
+  // Read ahead of the tap: iOS only opens the share sheet straight from a user gesture.
+  const exported = useLiveQuery(() => exportProgram(programId), [programId])
   const navigate = useNavigate()
   const [editing, setEditing] = useState(false)
   const [dialog, setDialog] = useState<Dialog | null>(null)
@@ -35,6 +40,16 @@ export function ProgramPage() {
   }
 
   const { program, days } = detail
+  const exportFile = async () => {
+    if (!exported) return
+    const file = new File([serializeProgramFile(createProgramFile(exported, Date.now()))], programFileName(exported.name), { type: 'application/json' })
+    try {
+      await shareFile(file)
+    } catch (e) {
+      window.alert(`Couldn’t export the program: ${e instanceof Error ? e.message : String(e)}`)
+    }
+  }
+
   const move = (index: number, delta: number) =>
     attempt(() => reorderDays(programId, moveItem(days, index, delta).map((d) => d.day.id)))
 
@@ -75,6 +90,7 @@ export function ProgramPage() {
 
       <ListGroup>
         <ButtonRow title="Rename program" onClick={() => setDialog({ kind: 'renameProgram' })} />
+        <ButtonRow title="Export program" subtitle="Save to Files or send to another phone" onClick={() => void exportFile()} />
         <ButtonRow
           title={program.archived ? 'Unarchive program' : 'Archive program'}
           onClick={() => void attempt(() => updateProgram(programId, { archived: !program.archived }))}

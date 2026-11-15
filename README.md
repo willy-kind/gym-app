@@ -5,7 +5,8 @@ Home Screen). Works fully offline; all data stays on the phone.
 
 - **Train**: start a program day, log weight × reps per set (saved instantly),
   "Last time" shown and prefilled, rest timer that survives backgrounding
-- **Programs**: edit programs, days, exercises and targets; exercise library
+- **Programs**: edit programs, days, exercises and targets; exercise library;
+  export a single program to a file and import it (added as a new program)
 - **History**: browse, edit and delete past workouts
 - **Progress**: per-exercise charts of top set, estimated 1RM and volume
 - **Settings** (gear on Train): kg/lb, default rest, rest-over sound,

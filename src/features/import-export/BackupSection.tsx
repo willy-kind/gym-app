@@ -3,6 +3,7 @@ import { countOf } from '../../lib/format'
 import { ListGroup } from '../../components/List'
 import { Button } from '../../components/Button'
 import { Sheet } from '../../components/Sheet'
+import { shareFile } from '../../components/shareFile'
 import { exportAll, restoreAll } from '../../db/backup'
 import { getActiveSession } from '../../db/sessions'
 import { backupCounts, backupFileName, createBackup, parseBackup, serializeBackup, type BackupFile } from '../../lib/backup'
@@ -40,21 +41,11 @@ export function BackupSection() {
   // Called straight from the tap: iOS only opens the share sheet from a user gesture.
   const share = async (p: Prepared) => {
     try {
-      if (navigator.canShare?.({ files: [p.file] })) {
-        await navigator.share({ files: [p.file], title: p.file.name })
-      } else {
-        const url = URL.createObjectURL(p.file)
-        const a = document.createElement('a')
-        a.href = url
-        a.download = p.file.name
-        a.click()
-        setTimeout(() => URL.revokeObjectURL(url), 10_000)
-      }
+      if (!(await shareFile(p.file))) return // share sheet cancelled
       updateSettings({ lastBackupAt: Date.now() })
       setPrepared(null)
       setMessage({ text: `Backup saved: ${p.file.name}` })
     } catch (e) {
-      if (e instanceof DOMException && e.name === 'AbortError') return // share sheet cancelled
       setMessage({ text: `Couldn’t save the backup: ${e instanceof Error ? e.message : String(e)}`, error: true })
     }
   }
