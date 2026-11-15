@@ -25,15 +25,6 @@ async function loadTrain() {
   return { activeId: undefined, details, lastTrained, hasWorkouts }
 }
 
-const settingsLink = (
-  <Link to="/settings" aria-label="Settings" className="flex min-h-11 min-w-11 items-center justify-center text-accent">
-    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <circle cx="12" cy="12" r="3" />
-      <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" />
-    </svg>
-  </Link>
-)
-
 /** Pick a day to train, or jump straight back into an unfinished session. */
 export function TrainPage() {
   const data = useLiveQuery(loadTrain, [])
@@ -47,7 +38,7 @@ export function TrainPage() {
     if (noSession) clearRest()
   }, [noSession])
 
-  if (!data) return <Page title="Train" action={settingsLink} />
+  if (!data) return <Page title="Train" />
   if (data.activeId !== undefined) return <Navigate to={`/train/session/${data.activeId}`} replace />
 
   const { details, lastTrained, hasWorkouts } = data
@@ -69,7 +60,7 @@ export function TrainPage() {
   const primary = [...withLast].sort((a, b) => b.last.at - a.last.at)[0]
 
   return (
-    <Page title="Train" action={settingsLink}>
+    <Page title="Train">
       {reminder && (
         <Link to="/settings" className="card-edge mb-4 flex items-center gap-3 rounded-xl bg-surface px-4 py-3">
           <span className="min-w-0 flex-1">

@@ -24,7 +24,7 @@ export function SettingsPage() {
   }, [])
 
   return (
-    <Page title="Settings" back={{ to: '/train', label: 'Train' }}>
+    <Page title="Settings">
       <ListGroup header="Units" footer="Weights are always stored in kg; this only changes how they’re shown and entered.">
         <li className="p-2">
           <Segmented
