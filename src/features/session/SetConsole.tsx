@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { parseReps, parseWeight, weightInputText } from '../../lib/targets'
 import { fromDisplay, toDisplay } from '../../lib/units'
+import { useLiftAboveKeyboard } from '../../components/useKeyboardInset'
 import { useSettings } from '../settings/settingsStore'
 import { unlockAudio } from './sound'
 import { prefillSet, type SessionExercise, type SetValues } from '../../lib/session'
@@ -39,6 +40,9 @@ export function SetConsole({
   const [saving, setSaving] = useState(false)
   // Guards against a double tap logging the same set twice before the button re-renders as disabled.
   const inFlight = useRef(false)
+  // iOS lays the keyboard over the page instead of shrinking it; raise the panel so the field being typed in stays visible.
+  const panel = useRef<HTMLDivElement>(null)
+  const lift = useLiftAboveKeyboard(panel)
 
   const typed = parseWeight(wText)
   const weight = typed === null ? null : fromDisplay(typed, unit)
@@ -63,7 +67,10 @@ export function SetConsole({
   }
 
   return (
-    <div className="sticky bottom-0 z-10 -mx-4 rounded-t-2xl bg-surface px-4 pt-4 pb-3 shadow-[0_-6px_24px_rgba(0,0,0,0.18)]">
+    <div
+      ref={panel}
+      style={lift ? { transform: `translateY(${-lift}px)` } : undefined}
+      className="sticky bottom-0 z-10 -mx-4 rounded-t-2xl bg-surface px-4 pt-4 pb-3 shadow-[0_-6px_24px_rgba(0,0,0,0.18)]">
       {/* While resting, the timer row names what's next and stands in for the title row. */}
       <PanelRestTimer sessionId={sessionId} next={timer?.exerciseName === exercise.name ? label : `${exercise.name} · ${label}`} />
       {!resting && (
